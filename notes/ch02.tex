@@ -1,0 +1,515 @@
+\chapter{Numerical methods for PDE}
+
+PDE stands for Partial Differential Equations, and we are going to study in particular Finite Difference Methods, not Finite Element Methods.
+
+PDEs can be divided in three categories: elliptic, parabolic and high-parabolic. We will see a test problem on each of these categories.
+
+\section{Poisson 2D problem with Dirichlet boundary conditions}
+\begin{equation}
+\text{Poisson equation:\quad} \Delta u(x, y) = f(x, y), (x, y) \in \Omega
+\end{equation}
+
+\begin{equation}
+\text{Dirichlet Boundary condition:\quad} u(x, y) = g(x, y), (x, y) \in \Gamma
+\end{equation}
+
+where $\Omega = (0, 1)^2$
+
+% im:I
+
+Example: the electric potential inside a domain with a defined potential inside, $f$, and a fixed potential, $g$, at the border.
+
+The Poisson 2D problem can be solved analytically using \textit{separation of variables} by searching for solutions of this type:
+
+\begin{equation}
+	u(x, y) = X(x) Y(y)
+\end{equation}
+
+Discretization: fix N positive integer and put $h = \frac{1}{N}$ as the stepsize.
+
+Now we discretize the plane $\mathbb{R}^2$ by the mesh:
+
+\begin{equation}
+	\mathbb{R}^2_h = \{(mh, nh): m,n \in \mathbb{Z}\}
+\end{equation}
+
+% im:2
+
+For a mesh point $(mh, nh)$, with $m, n \in \mathbb{Z}$ we can define four neighbors:
+
+% im:3
+
+The discrete version of $\Omega$ is
+
+
+\begin{equation}
+	\Omega_h := \Omega \cap \mathbb{R}^2_h
+\end{equation}
+
+% 4
+
+while the discrete version of $\Gamma$ is the set of points $\Gamma_h$ in $\mathbb{R}^2_h$ which are not in $\Omega_h$, but have a neighbor in $\Omega_h$.
+
+Notice how $\Gamma_h \neq \Gamma \cap \mathbb{R}^2_h$ because the four corners $\{(0,0), (0,1), (1,0), (1,1)\}$ are not included. 
+
+We also define $\overline{\Omega_h} = \Omega_h \cup \Gamma_h$: this is the discrete version of $\overline{\Omega_h}  = \Omega \cup \Gamma$.\\
+
+
+The discrete version of the Poisson problem with Dirichlet Boundary conditions is:
+
+
+\begin{equation}
+\text{discrete Poisson equation:\enspace} \Delta_h u_h(x, y) = f(x, y), (x, y) \in \Omega_h
+\end{equation}
+	
+\begin{equation}
+\text{discrete Dirichlet Boundary condition:\enspace} u_h(x,y) = g(x, y), (x, y) \in \Gamma_h
+\end{equation}
+
+
+An operator is a map/function, whose domains and codomains are set of functions.
+
+$\Delta_h$ is a discrete Laplacian, i.e. and operator such that:
+\begin{itemize}
+	\item it associates (as a map) to a mesh function $\overline{\Omega_h} \rightarrow \mathbb{R}$ an interior mesh function $\Omega_h \rightarrow \mathbb{R}$;
+	
+	\item it approximates the Laplacian, in the sense that, for function $v: \overline{\Omega_h} \rightarrow \mathbb{R}$ sufficiently smooth, which means $C^2(\overline{\Omega_h})$:
+		
+		\begin{equation}
+			\Delta_h v |_{\overline{\Omega_h}} \; (x,y) \approx \Delta v(x, y) \quad (x, y) \in \Omega_h
+		\end{equation}
+
+	where $|_{\overline{\Omega_h}}$ is the restriction of $v$ to $\overline{\Omega_h}  \subseteq \overline{\Omega}$.	
+\end{itemize}
+
+We are going to show how to construct a discrete Laplacian.\\
+
+
+Consider a function $v$ of only one variable $t$. We discretize $v''(t)$ by:
+
+\begin{equation}
+\frac{v(t - h) - 2 v(t) + v(t + h)}{h^2}
+\end{equation}
+.
+
+%5
+
+\begin{equation}
+\frac{\frac{v(t + h) - v(t)}{h} - \frac{v(t) - v(t - h)}{h}}{h} \approx\\
+\frac{v'(t) - v'(t-h)}{h} \approx\\
+v''(t-h) \approx v''(t)
+\end{equation}
+
+By Taylor approximations under the assumptions that v is $C^4$:
+
+\begin{equation}
+v(t-h) = v(t) - v'(t) h + \frac{1}{2} v''(t) h^2 - \frac{1}{6} v'''(t) h^3 + \frac{1}{24} v^{(4)}(\alpha_h) h^4
+\label{t-h}
+\end{equation}
+
+where $\alpha_h \in [t-h, t]$;
+
+\begin{equation}
+v(t+h) = v(t) + v'(t) h + \frac{1}{2} v''(t) h^2 + \frac{1}{6} v'''(t) h^3 + \frac{1}{24} v^{(4)}(\beta_h) h^4
+\label{t+h}
+\end{equation}
+
+where $\beta_h \in [t, t+h]$.
+
+By summing \ref{t-h} and \ref{t+h} we obtain:
+\begin{equation}
+v(t-h) + v(t+h) = 2 v(t) + v''(t) h^2 + \frac{1}{24} (v^{(4)}(\alpha_h) + v^{(4)}(\beta_h)) h^4
+\end{equation}
+
+\begin{equation}
+v(t-h) - 2 v(t) + v(t+h) = v''(t) h^2 + \frac{1}{24} (v^{(4)}(\alpha_h) + v^{(4)}(\beta_h)) h^4
+\end{equation}
+\begin{equation}
+\frac{v(t-h) - 2 v(t) + v(t+h)}{h^2} = v''(t) + \frac{1}{24} (v^{(4)}(\alpha_h) + v^{(4)}(\beta_h)) h^2
+\end{equation}
+
+So we got an approximation of the second derivative of the function $v$.
+
+\subsection{Discretization of the Laplacian}
+
+For a smooth function $v: \overline{\Omega_h} \rightarrow \mathbb{R}$ we approximate the Laplacian:
+
+% 6
+
+by:
+
+\begin{equation}
+\Delta_h v(x, y) = \frac{v(x-h, y) - 2v(x,y) + v(x+h, y)}{h^2} + \frac{v(x, y-h) - 2v(x,y) + v(x, y+h)}{h^2}
+\end{equation}
+
+at $(x, y) \in \Omega_h$.
+
+% 7
+
+The computation of $\Delta_h v(x, y)$ requires $v(x-h, y)$ and $v(x, y+h)$ with $(x-h, y), (x, y+h) \in \Gamma_h$.
+
+This discretization of the Laplacian is called the \textit{Five-points discretization}:
+
+% 8
+
+
+\subsection{Assess approximation of the discrete Laplacian}
+
+Consider $v: \overline{\Omega} \rightarrow \mathbb{R}$ of class $C^4$. For $(x, y) \in \Omega_h$:
+
+\begin{equation}
+|\Delta_h v {|}_{\overline{\Omega_h}} (x,y) \Delta v(x,y)|
+\end{equation}
+
+\begin{equation}
+|\frac{v(x-h, y)  - 2v(x, y) + v(x+h, y)}{h} + \frac{v(x, y-h) - 2v(x, y) + v(x, y+h)}{h} - \frac{\partial^2 v}{\partial x^2}(x, y) - \frac{\partial^2 v}{\partial y^2}(x, y)|
+\end{equation}
+
+which is $\leq$ than: 
+
+\begin{equation}
+|\frac{v(x-h, y) - 2v(x, y) + v(x+h, y)}{h^2} - \frac{\partial^2 v}{\partial x^2}(x, y)| + |\frac{v(x, y-h) - 2v(x, y) + v(x, y+h)}{h^2} - \frac{\partial^2 v}{\partial y^2}(x, y)|
+\label{buh}
+\end{equation}
+.
+
+\ref{buh} is equal to:
+
+\begin{equation}
+|\frac{1}{24} ( \frac{\partial^4 v}{\partial x^4}(\alpha_h, y) + \frac{\partial^4 v}{\partial x^4}(\beta_h, y) \; h^2) | + |\frac{1}{24} ( \frac{\partial^4 v}{\partial y^4}(x, \gamma_h) + \frac{\partial^4 v}{\partial y^4}(x, \delta_h) \; h^2) |
+\label{buh2}
+\end{equation}
+
+where $\alpha_h \in [x-h, x], \beta_h \in [x, x+h], \gamma_h \in [y-h, y], \delta_h \in [y, y+h]$.
+
+\ref{buh2} (the error) can be bounded ($\leq$) by:
+
+\begin{equation}
+\frac{1}{6} \max\{ \max_{(x, y) \in \overline{\Omega}} |\frac{\partial^4 v}{\partial x^4} (x, y)|, \max_{(x, y) \in \overline{\Omega}} |\frac{\partial^4 v}{\partial y^4} (x, y)| \} \; h^2
+\end{equation}
+
+So we can conclude that:
+
+\begin{equation}
+\max_{(x,y) \in \Omega_h}  |\Delta_h v {|}_{\overline{\Omega_h}} (x,y) \Delta v(x,y)| \leq \frac{1}{6} \max\{ \max_{(x, y) \in \overline{\Omega}} |\frac{\partial^4 v}{\partial x^4} (x, y)|, \max_{(x, y) \in \overline{\Omega}} |\frac{\partial^4 v}{\partial y^4} (x, y)| \} \; h^2
+\end{equation}
+
+
+This is called the \textit{consistency error} of the five point approximation of the discrete Laplacian.
+
+\subsection{Exercise}
+
+Given $v \in C^6(\Omega)$, find  a function $C(x,y)$ of the point $(x, y) \in \overline{\Omega}$ and $M \ge 0$ such that 
+\begin{equation*}
+\max_{(x,y) \in \Omega_h}  |\Delta_h v {|}_{\overline{\Omega_h}} (x,y) - \Delta v(x,y) - C(x, y) h^2| \le M h^4
+\end{equation*}
+
+\begin{equation*}
+%\max_{(x,y) \in \Omega_h}  |
+\Delta_h v {|}_{\overline{\Omega_h}} (x,y) = \Delta v'(x,y) + \text{error}
+\end{equation*}
+
+with $\text{error} = O(h^2)(*) = C(x, y) h^2 + O(h^4) (**)$.
+
+
+Remind that:
+\begin{equation}
+v''(t) \approx \frac{v(t - h) - 2 v(t) + v(t + h)}{h^2}
+\end{equation}
+
+we can continue with the Taylor expansion:
+\begin{equation*}
+v(t-h) = v(t) - v'(t) h + \frac{v''(t)}{2} h^2 - \frac{v'''(t)}{6} h^3 + \frac{v^{4}(t)}{24} h^4  - \frac{v^{5}(t)}{120} h^5 + \frac{v^{6}(t)}{6!} h^6
+\end{equation*}
+
+\begin{equation*}
+v(t-h) = v(t) + v'(t) h + \frac{v''(t)}{2} h^2 + \frac{v'''(t)}{6} h^3 + \frac{v^{4}(t)}{24} h^4  + \frac{v^{5}(t)}{120} h^5 + \frac{v^{6}(t)}{6!} h^6
+\end{equation*}
+
+where $\alpha \in [t-h, t]$ and $\beta \in [t, t+h]$.
+
+\begin{equation*}
+v(t-h) + v(t+h) = 2v(t) + v''(t) h^2 + \frac{v^{4}(t)}{12} h^4 + \frac{v^{6}(\alpha)}{6!} h^6 + \frac{v^{6}(\beta)}{6!} h^6
+\end{equation*}
+
+\begin{equation*}
+\frac{v(t-h) - 2v(t)+ v(t+h)}{h^2} - v''(t) h^2 = \frac{v^{4}(t)}{12} h^4 + \frac{v^{6}(\alpha)}{6!} h^6 + \frac{v^{6}(\beta)}{6!} h^6
+\end{equation*}
+
+
+\dots
+
+
+The discrete problem:
+\begin{equation*}
+\text{Poisson equation:\quad} \Delta u_h(x, y) = f(x, y), (x, y) \in \Omega_h
+\end{equation*}
+
+\begin{equation*}
+\text{Dirichlet Boundary condition:\quad} u_h(x, y) = g(x, y), (x, y) \in \Gamma_h
+\end{equation*}
+
+is a linear system of $(N-1)^2$ unknowns (where $N$ is the number of subdivisions we do in each dimension of the square)  and $(N-1)^2$ equations.
+
+The unknowns are $u_{ij} := u_h (ih, jh)$ with $i \in \{1, \dots, N-1 \}$ and $j \in \{1, \dots, N-1 \}$.
+
+% 1 : 2018/03/15
+
+.. we don't consider the values on the borders as unknowns because they are known, from the second equation of the Dirichlet Boundary condition.
+
+On the border $\Gamma_h$:
+
+\begin{equation*}
+u_{ij} = u_h (ih, jh) = h_{ij} := g(ih, jh)
+\end{equation*}
+
+where 
+\begin{equation*}
+(i,j) \in \{0\} \times \{1, \dots, N-1 \} \cup \{1, \dots, N-1 \} \times \{0\} \cup \{N\} \times  \{1, \dots, N-1 \} \cup  \{1, \dots, N-1 \} \times \{N\}
+\end{equation*}
+
+The equations are 
+\begin{equation*}
+\Delta_h u_h (x, y) = f(x, y), \quad \in \Omega_h
+\end{equation*}
+
+each equation corresponds to a point in $\Omega_h$ with $(N-1)^2$ equations.
+
+The equation corresponding to the point $(ih, jh)$, with $i \in  \{1, \dots, N-1 \}, j \in  \{1, \dots, N-1 \}$ is:
+
+\begin{equation*}
+\frac{u_{i-1\; j} - 2 u_{ij} + u_{i+1\; j}}{h^2} + \frac{u_{i\; j-1} - 2 u_{ij} + u_{i\; j+1}}{h^2} = f(ih, jh) = f_{ij}
+\end{equation*}
+
+\begin{equation*}
+u_{i\; j-1} + u_{i-1\; j} -4 u_{ij} +  u_{i+1\; j} + u_{i\; j+1} = h^2 f_{ij}
+\end{equation*}
+
+In order to apply a linear system of the form $A u = b$, we need to re-arrange the equations of the points of the square (which are 2D) into a 1D vector.
+
+Consider $N=4$:
+
+% 2
+\dots
+
+We want to rewrite our matrix of unknowns $u$:
+
+\begin{equation*}
+u = \begin{bmatrix}
+u_{11} & u_{21} & u_{31} \\
+u_{12} & u_{22} & u_{32} \\
+u_{13} & u_{23} & u_{33} \\
+\end{bmatrix}
+\end{equation*}
+
+as a vector:
+
+\begin{equation*}
+u = \begin{bmatrix}
+u_{11} \\
+u_{21} \\
+u_{31} \\
+u_{12} \\
+u_{22} \\
+u_{32} \\
+u_{13} \\
+u_{23} \\
+u_{33} \\
+\end{bmatrix}
+\end{equation*}
+
+Then we can rewrite our equation $u_{i\; j-1} + u_{i-1\; j} -4 u_{ij} +  u_{i+1\; j} + u_{i\; j+1} = h^2 f_{ij}$ as (for the point $(1,1)$):
+
+\begin{equation*}
+u_{10} + u_{01} - 4u_{11} + u_{21}  + u_{12} = h^2 f_{11}
+\end{equation*}
+
+where $u_{10}$ and $u_{01}$ correspond to $g_{10}$ and $g_{01}$ respectively.
+
+\begin{equation*}
+- 4u_{11} + u_{21}  + u_{12} = h^2 f_{11} - u_{10} - u_{01}
+\end{equation*}
+
+For the point $(2,1)$:
+
+\begin{equation*}
+u_{20} + u_{11} - 4u_{21} + u_{31}  + u_{22} = h^2 f_{22}
+\end{equation*}
+
+rewritten as:
+\begin{equation*}
+u_{11} - 4u_{21} + u_{31} + u_{22} = h^2 f_{22} - g_{20}
+\end{equation*}
+
+We can write a matrix $\mathcal{A}$:
+
+\begin{equation*}
+\mathcal{A} = \begin{bmatrix}
+-4 &  1 &  0 &  1 &  0 &  0 &  0 &  0 &  0 \\
+ 1 & -4 &  1 &  0 &  1 &  0 &  0 &  0 &  0 \\
+ 0 &  1 & -4 &  0 &  0 &  1 &  0 &  0 &  0 \\
+ 1 &  0 &  0 & -4 &  1 &  0 &  1 &  0 &  0 \\
+ 0 &  1 &  0 &  1 & -4 &  1 &  0 &  1 &  0 \\
+ 0 &  0 &  1 &  0 &  1 & -4 &  0 &  0 &  1 \\
+ 0 &  0 &  0 &  1 &  0 &  0 & -4 &  1 &  0 \\
+ 0 &  0 &  0 &  0 &  1 &  0 &  1 & -4 &  1 \\
+ 0 &  0 &  0 &  0 &  0 &  1 &  0 &  1 & -4 \\
+\end{bmatrix}
+\end{equation*}
+
+and the unknown vector $u$:
+
+\begin{equation*}
+u = \begin{bmatrix}
+h^2 f_{11} - g_{01} - g_{10} \\
+h^2 f_{21} - g_{20}          \\
+h^2 f_{31} - g_{14}          \\
+h^2 f_{12} - g_{02}          \\
+h^2 f_{22}                   \\
+h^2 f_{32} - g_{24}          \\
+h^2 f_{13} - g_{03} - g_{14} \\
+h^2 f_{23} - g_{24}          \\
+h^2 f_{33} - g_{34} - g_{43} \\
+\end{bmatrix}
+\end{equation*}
+
+$\mathcal{A}$ can be rewritten as a $3x3$ blocks matrix with blocks of size $3x3$:
+\begin{equation*}
+\mathcal{A} = \begin{bmatrix}
+  A & I_3 &   0 \\
+I_3 &   A & I_3 \\
+  0 & I_3 &   A \\
+\end{bmatrix}
+\end{equation*}
+
+
+For a general $N$, $\mathcal{A}$ is a $(N - 1) \times (N - 1)$ block matrix:
+\begin{equation*}
+\mathcal{A} = \begin{bmatrix}
+      A & I_{N-1} &        &         &         \\
+I_{N-1} &       A & \ddots &         &         \\
+        &  \ddots & \ddots &  \ddots &         \\
+%
+        &         & \ddots &       A & I_{N-1} \\
+        &         &        & I_{N-1} &       A \\
+\end{bmatrix}
+\end{equation*}
+
+% -4  1
+%  1 -4
+
+
+A generic matrix with dimension $n \times n$ is called ``sparse" if the number of non-zero elements is $O(n)$.
+
+The matrix $\mathcal{A}$ is sparse, block tridiagonal (it has elements on the diagonal, on the diagonal of the upper matrix and on the diagonal of the lower matrix), symmetric and \dots.
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}

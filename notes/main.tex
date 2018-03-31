@@ -1,0 +1,94 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{siunitx}    % for number formatting
+\usepackage{color}
+\usepackage{textcomp}
+%\usepackage{soul}       % for text highlighting
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{soul}
+\usepackage[most]{tcolorbox}
+
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{lightblue}{RGB}{0,200,1}
+% \definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+% \definecolor{lightgray}{gray}{0.92}
+\definecolor{verylightgray}{gray}{0.95}
+\definecolor{veryverylightgray}{gray}{0.98}
+
+\lstset{
+	backgroundcolor=\color{veryverylightgray},	% choose the background color  
+	%   basicstyle=\footnotesize\ttfamily,      	% size of fonts used for the code
+	basicstyle=\fontsize{10}{10pt}\ttfamily,      	% size of fonts used for the code
+	breaklines=true,                 			% automatic line breaking only at whitespace
+	captionpos=b,                    			% sets the caption-position to bottom
+	%   captionpos=t,                    			% sets the caption-position to top, before the code
+	commentstyle=\color{mygreen},    			% comment style
+	escapeinside={\%*}{*)},         			% if you want to add LaTeX within your code
+	keywordstyle=\color{blue},       			% keyword style
+	stringstyle=\color{mymauve},			    % string literal style
+	showstringspaces=false,
+	tabsize=4,
+	numbers=left,
+	numberstyle=\bfseries,
+	frame=lrTB,
+	aboveskip=20pt, belowskip=20pt,			% increase horizontal spacing
+	%   framewidth=
+	framerule=0.1pt,
+	%   xleftmargin=\parindent,
+	columns=fullflexible,						% the following are needed for a correct copy-paste from pdf
+	upquote=true,
+	keepspaces=true,
+	literate={*}{{\char42}}1
+	{-}{{\char45}}1
+	{~\#}{{{~\#}}}1					% so that # is not mistaken always for a comment. https://tex.stackexchange.com/a/209637/98325
+	{\$\#}{{{\$\#}}}2
+	{\#\$}{{{\#\$}}}2
+	%            {\ }{{\copyablespace}}1
+}
+
+\tcbset{
+	frame code={}
+	center title,
+	left=0pt,
+	right=0pt,
+	top=0pt,
+	bottom=0pt,
+	colback=red!40,
+	colframe=white,
+	width=\dimexpr\textwidth\relax,
+	enlarge left by=0mm,
+	boxsep=5pt,
+	arc=0pt,outer arc=0pt,
+}
+
+
+
+
+
+\begin{document}
+	
+	\title{Advanced numerical analysis}
+	\author{Alberto Chiusole's notes\\\\
+		professors:\\
+		Paolo Novati (novati@units.it) and\\
+		Stefano Maset (maset@univ.trieste.it)}
+	\date{Academic Year 2017-2018}
+	
+	\frontmatter
+	\maketitle
+	\tableofcontents
+	
+	\mainmatter
+	\include{./ch01}
+	\include{./ch02}
+	\include{./ch03}
+	
+	\backmatter
+	% bibliography, glossary and index would go here.
+	
+\end{document}
