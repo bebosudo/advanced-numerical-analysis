@@ -1,37 +1,10 @@
-## Welcome to GitHub Pages
+## Welcome to the Advanced Numerical Analysis repository, edited by Alberto Chiusole
 
-You can use the [editor on GitHub](https://github.com/bebosudo/advanced-numerical-analysis/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+Repo for the Advanced Numerical Analysis course @ University of Trieste, containing mainly exercises.
+During the course, held by [prof. Paolo Novati](http://www.novati.dmg.units.it/), we investigated different numerical methods to perform approximations.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+The following list collects the exercises done so far:
 
-### Markdown
+1. [Interpolation using Chebyshev nodes](http://devzero.tk/advanced-numerical-analysis/exercises/01_interpolation_with_cheby.html).
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/bebosudo/advanced-numerical-analysis/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+1. [Newton-Cotes quadrature formula for integration](http://devzero.tk/advanced-numerical-analysis/exercises/02_quadratures_with_newton_cotes.html), using Chebyshev nodes.
