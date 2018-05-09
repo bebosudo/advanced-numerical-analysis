@@ -1,3 +1,570 @@
+\section{Fourier Analysis}
 
-%\begin{equation}
-%\end{equation}
+$L(\Omega_h)$ is the set of functions $\Omega_h \rightarrow \mathbb{R}$; $L(\Omega_h)$ is isomorphic, as $\mathbb{R}^{(N-1)^2}$.
+
+The function in $L(\Omega_h)$ are extended to $\overline{\Omega_h}$ by setting value zero there.
+
+So, we can now consider the Laplacian $\Delta_h$ as an operator $L(\Omega_h) \rightarrow L(\Omega_h)$.
+
+Is this operator invertible? Or, for $f_h \in L(\Omega_h)$, there exists a unique function $v_h$ such that:
+\begin{equation*}
+\Delta_h v_h = f_h
+\end{equation*}
+
+\begin{equation}
+\Delta_h v_h(x, y) = f_h(x, y)  \quad (x, y) in \Omega_h
+\end{equation}
+
+\begin{equation}
+v_h(x, y) = 0 \quad (x, y) \in \Gamma_h
+\end{equation}
+
+This means $\Delta_h$ invertible.
+
+We know that the previous problem has a unique solution.
+
+So $\Delta_h$ is invertible and $\Delta_h^{-1}$ exists.
+Is $\Delta_h^{-1}$ uniformly bounded with respect to $h$?
+
+Consider $L(\Omega_h)$ with the $L^\infty(\Omega_h)$.
+
+\begin{equation*}
+|| \Delta_h^{-1} || = \sup_{f_h \in L^{\infty}(\Omega_h), f_h \neq 0} \frac{||v_h||_{L^{\infty}(\Omega_h)}}{||f_h||_{L^{\infty}(\Omega_h)}}
+\end{equation*}
+
+$\Delta_h^{-1}$ uniformly bounded with respect to $h$ means there exists $C \ge 0$, independent of $h$, such that:
+
+\begin{equation*}
+|| \Delta_h^{-1} || \le C
+\end{equation*}
+
+For the five-point discretization, we have:
+
+\begin{equation*}
+||v_h||_{L^{\infty}(\Omega_h)} \le \frac{1}{8} ||f_h||_{L^{\infty}(\Omega_h)}
+\end{equation*}
+
+for any problem with right-hand side $f_h$.
+
+Then:
+
+\begin{equation*}
+|| \Delta_h^{-1} || \le \underbrace{\frac{1}{8}}_{= C}
+\end{equation*}
+
+The relation between the convergence error:
+
+\begin{equation*}
+e_h = u_h - {u|}_{\Omega_h} \in L(\Omega_h)
+\end{equation*}
+
+and the consistency error:
+
+\begin{equation*}
+\epsilon_h = \Delta_h u|_{\overline{\Omega_h}} - (\Delta u)|_{\Omega_h} \in L(\Omega_h)
+\end{equation*}
+
+is:
+\begin{equation*}
+\Delta_h e_h = - \epsilon_h
+\end{equation*}
+
+So:
+\begin{equation*}
+e_h = \Delta_h^{-1}(-\epsilon_h)
+\end{equation*}
+
+and then:
+\begin{equation*}
+||e_h||_{L^{\infty}(\Omega_h)} \le || \Delta_h^{-1} || {|| \epsilon_h ||}_{L^\infty(\Omega_h)}
+\end{equation*}
+
+and then:
+\begin{equation*}
+||e_h||_{L^{\infty}(\Omega_h)} \le C {|| \epsilon_h ||}_{L^\infty(\Omega_h)}
+\end{equation*}
+
+$L^\infty$ on $L(\Omega_h)$ is the discrete analogous of the $L^\infty$ on $L(\Omega)$.
+
+We introduce a norm on $L(\Omega_h)$ that is a discrete analogous of the $L^2$ norm on $L^2(\Omega)$.
+
+For $v: \Omega \rightarrow \mathbb{R}$,
+
+\begin{equation*}
+|| v || = \sqrt{\int_{(x, y) \in \Omega} v(x,y)^2 d(x, y)}
+\end{equation*}
+
+is called the $L^2$ norm of $v$.
+
+$L^2(\Omega)$ is the set of the function $\Omega \rightarrow \mathbb{R}$ such that:
+
+\begin{equation*}
+\int_{(x, y) \in \Omega} v(x,y)^2 d(x, y) < \infty
+\end{equation*}
+
+On $L^2(\Omega)$, we can introduce the scalar product:
+\begin{equation*}
+<v, w> = \int_{(x, y) \in \Omega} v(x,y) w(x,y) d(x, y)
+\end{equation*}
+with $v, w \in L^2(\Omega)$.
+
+Then, the $L^2$ norm is the norm derived by this scalar product:
+\begin{equation*}
+||v|| = \sqrt{<v, v>}, \quad L^2(\Omega)
+\end{equation*}
+
+Now, we introduce discrete forms of this scalar product and this norm on $L(\Omega_h)$ and then to bound uniformly with respect to $h$ the operator norm:
+
+\begin{equation*}
+|| \Delta_h^{-1} || = \sup_{f_h \in L^{\infty}(\Omega_h), f_h \neq 0} \frac{||v_h||_h}{||f_h||_h}
+\end{equation*}
+
+where $||.||_h$ is the discrete $L^2$ norm.
+
+First, we consider the $1D$ version of the Poisson problem.
+
+\begin{equation*}
+\Omega = (0, 1) =: I
+\end{equation*}
+\begin{equation*}
+\Omega_h = \{h, 2h, \dots, (N-1)h \} =: I_h
+\end{equation*}
+
+$L^2(I)$ is the set of the functions $v: I \rightarrow \mathbb{R}$ such that:
+
+\begin{equation*}
+\int_{0}^{1} v(x)^2 d(x) < +\infty
+\end{equation*}
+
+The scalar product on $L^2(I)$ is:
+\begin{equation*}
+<v, w> = \int_0^1 v(x) w(x) d(x), \quad v, w \in L^2(I)
+\end{equation*}
+
+and the $L^2$ norm is:
+\begin{equation*}
+||v|| = \sqrt{\int_0^1 v(x)^2 d(x)}, \quad v \in L^2(I)
+\end{equation*}
+
+On $L(I_n)$ we introduce the scalar product:
+\begin{equation*}
+<v_h, w_h> = h \sum_{k=1}^{N-1} v_h(k h) w_h(kh)
+\end{equation*}
+
+and the norm:
+\begin{equation*}
+{|| v_h ||}_h = \sqrt{<v_h, v_h>} = \sqrt{h \sum_{k=1}^{N-1} v_h(k h)^2}, \quad v_h \in L(I_h)
+\end{equation*}
+
+$||.||$ is the $L^2$ norm on $I_h$.
+
+\subsubsection{Exercise}
+Explain why the previous scalar product and norm on $L(I_h)$ are discretizations of the scalar product and norm on $L^2(I)$.
+
+\begin{equation*}
+\int_{0}^{1} g(x) dx \approx h \sum_{k=1}^{N-1} g(kh) = \sum_{k=1}^{N-1} g(kh) h
+\end{equation*}
+
+When $g = v w \rightarrow $ scalar product, $g = v^2 \rightarrow L^2$ norm.
+
+In $L^2(I)$ we have Fourier series. Consider the functions $\Phi_m \in L^2(I)$, $m \in \{1, 2, 3, \dots \}$ given by:
+
+\begin{equation*}
+\Phi_m(x) = sin(m \pi x), \quad x \in (0, 1)
+\end{equation*}
+
+These functions are orthogonal:
+\begin{equation*}
+<\Phi_m, \Phi_n> = 0 \quad \forall m \neq n
+\end{equation*}
+
+They constitute an orthogonal base for $L^2(I)$; for any $v \in L^2(I)$ we have the \textit{Fourier series of $v$}:
+\begin{equation*}
+v = \sum_{m=1}^{\infty} c_m \Phi_m
+\end{equation*}
+
+with:
+\begin{equation*}
+c_m = \frac{<v, \Phi_m>}{<\Phi_m, \Phi_m>}, \quad m \in \{1, 2, 3, \dots \}
+\end{equation*}
+
+The Fourier series converges in $L^2$:
+\begin{equation*}
+\lim_{M \rightarrow \infty} || v - \sum_{m = 1}^{M} c_m \Phi_m || = 0
+\end{equation*}
+
+We have the \textit{Parseval's identity}:
+\begin{equation*}
+|| v ||^2 = \sum_{m = 1}^\infty c_m^2 || \Phi_m ||^2, \quad v \in L^2(I)
+\end{equation*}
+
+The functions $\Phi_m$, with $m \in \{1, 2, 3, \dots\}$ are eigenvectors of the 1D Laplacian: $\Delta$ = "second derivative".
+
+For $m \in \{1, 2, 3, \dots \}$, we have:
+\begin{equation*}
+\Delta \Phi_m(x) = \frac{d^2}{d x^2} \sin(m \pi x) = \frac{d}{dx}(m \pi \cos(m \pi x)) = m \pi (-m \pi \sin(m \pi x)) = -m^2 \pi^2 \sin(m \pi x)
+\end{equation*}
+\begin{equation*}
+= - m^2 \pi^2 \Phi_m(x), \quad x \in (0, 1)
+\end{equation*}
+
+$\Phi_m$ is an eigenvector of $\Delta$ with relevant eigenvalue $- m^2 \pi^2 = \lambda_m$.
+
+We do the same for $L(I_h)$.
+
+We introduce the functions $\Phi_{m,h} \in L(I_h), m \in \{1, 2, \dots \}$, given by:
+\begin{equation*}
+\Phi_{m,h}(x) = \sin(m \pi x), \quad x \in I_h
+\end{equation*}
+
+The functions $\Phi_{m,h}, m \in \{1, 2, \dots \}$, are eigenvectors of the discrete laplacian:
+\begin{equation*}
+\Delta_h v_h(x) = \frac{v_h(x-h) - 2v_h(x) + v_h(x + h)}{h^2}, \quad x \in I_h and v_h \in L(I_h)
+\end{equation*}
+
+For $m \in \{1, 2, 3, \dots \}$,
+\begin{equation*}
+\Delta_h \Phi_{m,h} (x) = \frac{\sin(m \pi (x-h)) - 2 \sin (m \pi x) + \sin(m \pi (x + h))}{h^2}
+\end{equation*}
+
+Using Prostapheresis formulas:
+\begin{equation*}
+= \frac{2 \sin(m \pi x) \cos(m \pi x) - 2 \sin(m \pi x)}{h^2}
+\end{equation*}
+
+\begin{equation*}
+= - \frac{1 - 2 \cos(m \pi x)}{h^2} \underbrace{\sin(m \pi x)}_{\Phi_{m,h}(x)}, \quad x \in I_h
+\end{equation*}
+
+$\Phi_{m,h}$ is an eigenvector of the discrete 1D laplacian with relevant eigenvalue:
+
+$\lambda_{m, h} = -2 \frac{1 - \cos(m \pi h)}{h^2} = -2 \frac{2 \sin^2(\frac{m \pi x}{2})}{h^2} = -4 \frac{\sin^2(\frac{m \pi x}{2})}{h^2}$ 
+
+We have:
+\begin{equation*}
+0 > \lambda_{1, h} > \lambda_{2, h} > \dots > \lambda_{N - 1, h}
+\end{equation*}
+
+\subsubsection{Exercise}
+
+Prove that:
+\begin{enumerate}
+	\item $\lim_{h \rightarrow 0} \lambda_m = - m^2 \pi^2$
+	\item $\lambda_{N - 1, h} > - \frac{4}{h^2}$
+	\item $- 8 \ge \lambda_{1,h}$
+\end{enumerate}
+
+Proofs:
+\begin{enumerate}
+	\item 
+\begin{equation*}
+\lim_{h \rightarrow 0} \lambda_m = \lim_{h \rightarrow 0}( -4 \frac{\sin^2(\frac{m \pi x}{2})}{h^2})
+\end{equation*}
+	Using the limit $\lim_{x \rightarrow 0} \frac{\sin x}{x} = 1$ and $\lim_{x \rightarrow 0} \frac{\sin^2 x}{x^2} = 1$
+\begin{equation*}
+= -m^2 h^2 \lim_{h \rightarrow 0} (\frac{\sin(\frac{m \pi x}{2})}{\frac{m \pi x}{2}})^2 = - m^2 h^2
+\end{equation*}
+	
+	\item
+\begin{equation*}
+\lambda_{N - 1, h} = - 4 \frac{\sin^2(\frac{(N-1) \pi x h}{2})}{h^2} > -4 \frac{\sin^2(\pi/2)}{h^2} = - \frac{4}{h^2}
+\end{equation*}
+
+	\item 
+\begin{equation*}
+\lambda_{1,h} = - 4 \frac{\sin^2(\frac{\pi h}{2})}{h^2} = - \pi^2 ( \frac{\sin (\frac{\pi h}{2})}{\frac{\pi h}{2}})^2
+\end{equation*}
+As a function of $h$, $\lambda_{1, h}$ obtains the maximum value when $h$ is the maximum.
+
+The maximum $h$ possible is $h = \frac{1}{2}$.
+
+\begin{equation*}
+\lambda_{1,h} \le \lambda_{1, \frac{1}{2}} = - 4 \frac{\sin^2(\pi \frac{1}{2})}{(\frac{1}{2})^2} = -4 \frac{\sin^2(\frac{\pi}{4})}{\frac{1}{4}} = - 16 (\frac{\sqrt{2}}{2})^2 = -8
+\end{equation*}
+
+\end{enumerate}
+
+$\blacksquare$
+
+$\Phi_{1,h}, \dots, \Phi_{N-1,h}$ are a bases for the space $L(I_h) = \mathbb{R}^{N-1}$.
+
+So for any $v_h \in \mathbb{R}^{N-1}$, we have $v_h = \sum_{m=1}^{N-1} c_{m,h} \Phi_{m,h}$.
+
+Moreover, observe that $\Delta_h$ is symmetric and so $\Phi_{1,h}, \dots, \Phi_{N-1,h}$ are orthogonal in the standard scalar product:
+
+\begin{equation*}
+<v_h, w_h> = \sum_{x \in I_h} v_h(x) w_h(x)
+\end{equation*}
+
+of $\mathbb{R}^{N-1}$. The scalar product introduced in $L(I_h)$ is:
+
+\begin{equation*}
+<v_h, w_h>_h = h <v_h, w_h>
+\end{equation*}
+
+So $\Phi_{1,h}, \dots, \Phi_{N-1,h}$ are orthogonal also in the scalar product $<., .>_h$
+
+\subsubsection{Exercise}
+
+For $v_h \in L(I_h)$, prove that:
+
+\begin{equation*}
+c_{m,h} = \frac{<v_h, \Phi_{m,h}>}{||\Phi_{m,h}||_h^2} = <\Phi_{m,h}, \Phi_{m,h}> \quad, m \in \{1, \dots, N-1\}
+\end{equation*}
+
+Moreover, prove that the discrete Parceval's identity:
+
+\begin{equation*}
+||v_h||_h^2 = \sum_{m=1}^{N-1} c_{m,h}^2 ||\Phi_{m,h}||_h^2
+\end{equation*}
+
+We have:
+\begin{equation*}
+<v_h, \Phi_{m,h}>_h = <\sum_{n=1}^{N-1} c_{n,h} \Phi_{n,h}, \Phi_{m,h}>_h = \sum_{n=1}^{N-1} c_{n,h} \underbrace{<\Phi_{n,h}, \Phi_{m,h}>_h}_{=0 \;\; \forall n \neq m} = c_{m,h} <\Phi_{m,h}, \Phi_{m,h}>
+\end{equation*}
+
+\begin{equation*}
+||v_h||_h^2 = <v_h, v_h>_h = <\sum_{n=1}^{N-1} c_{n,h} \Phi_{n,h}, \sum_{m=1}^{N-1} c_{m,h} \Phi_{m,h}>_h = \sum_{n=1}^{N-1} \sum_{n=1}^{N-1} c_{n,h} c_{m,h} <\Phi_{n,h}, \Phi_{m,h}>_h = \sum_{m=1}^{N-1} c_{m,h}^2 \underbrace{<\Phi_{m,h}, \Phi_{m,h}>}_{= ||\Phi_{m,h}||}
+\end{equation*}
+
+Now we're ready for the band of:
+
+\begin{equation*}
+||\Delta_h^{-1} || = \sup_{f_h \in L(I_h)} \frac{||v_h||_h}{||f_h||_h}
+\end{equation*}
+
+where $v_h$ is the solution of:
+
+\begin{equation*}
+\Delta_h v_h = f_h
+\end{equation*}
+
+Let:
+\begin{equation*}
+v_h = \sum_{m=1}^{N-1} c_{m,h} \Phi_{m,h}
+\end{equation*}
+the discrete Fourier series for $v_h$.
+
+We have:
+\begin{equation*}
+f_h = \Delta_h v_h = \Delta_h \sum_{m=1}^{N-1} c_{m,h} \Phi_{m,h} = \sum_{m=1}^{N-1} c_{m,h} \underbrace{\Delta_h\Phi_{m,h}}_{= \lambda_{m, h}\Phi_{m,h}} = \sum_{m=1}^{N-1} (c_{m,h} \lambda_{m, h}) \Phi_{m,h}
+\end{equation*}
+which is the discrete Fourier series of $f_h$.
+
+Now we use the discrete Parseval's identity:
+\begin{equation*}
+||f_h||_h^2 = \sum_{m=1}{N-1} (c_{m,h} \lambda_{m,h})^2 ||\Phi_{m,h}||_h^2 = \sum_{m=1}{N-1} c_{m,h}^2 \underbrace{\lambda_{m,h}^2}_{= |\lambda_{m,h}|^2} ||\Phi_{m,h}||_h^2
+\end{equation*}
+
+\begin{equation*}
+-8 \ge \lambda_{1,h} \ge \lambda_{2,h} \ge \dots \implies 8 \le |\lambda_{1,h}| \le |\lambda_{2,h}| \le \dots 
+\end{equation*}
+
+\begin{equation*}
+\ge \sum_{m=1}^{N-1} 8^2 c_{m,h}^2 ||\Phi_{m,h}||_h^2 = 8^2 \underbrace{\sum_{m=1}^{N-1} c_{m,h}^2 ||\Phi_{m,h}||_h^2}_{= ||v_h||_h^2}
+\end{equation*}
+
+So, we have proved:
+\begin{equation*}
+||v_h||^2 \le \frac{1}{8^2} \dots
+\end{equation*}
+
+Since $f_h \in L(I_h)$ is arbitrary we have:
+\begin{equation*}
+||\Delta_h^{-1}|| \sup_{f_h \in L(I_h)} \frac{||v_h||_h}{||f||_h} \le \frac{1}{8}
+\end{equation*}
+
+Now we pass to the 2D case.
+
+In the 2D case:
+\begin{equation*}
+\Omega = (0, 1)^2 = I^2
+\end{equation*}
+
+\begin{equation*}
+\Omega_h = I^2 = \{(mh, nh): m,n \in \{1, \dots, N-1 \}\}
+\end{equation*}
+
+$L(\Omega_h)$ is isomorphic to $\mathbb{R}^{(N-1)^2}$:
+\begin{equation*}
+L(\Omega_h) = \mathbb{R}^{(N-1)^2}
+\end{equation*}
+
+We introduce, for $m,n \in \{1, \dots, N-1\}$, the functions $\Phi_{m,n,h} \in L(\Omega_h)$ given by:
+\begin{equation*}
+\Phi_{m,n,h}(x,y) = \Phi_{m,h}(x) \Phi_{n,h}(y) \quad (x,y) \in \Omega_h
+\end{equation*}
+
+where $\Phi_{m,h}$ and $\Phi_{n,h}$ were defined in the 1D case.
+
+The scalar product on $L(\Omega_h)$ is:
+\begin{equation*}
+<v_h, w_h> = h^2 \sum_{m=1}^{N-1} \sum_{n=1}^{N-1} v_h (m_h, n_h) w_h(m_h, n_h)
+\end{equation*}
+
+and the $L^2$ norm is:
+\begin{equation*}
+||v_h||_h = \sqrt{<v_h, v_h>} = \sqrt{h^2 \sum_{m=1}^{N-1} \sum_{n=1}^{N-1} v_h(m_h, n_h)^2}
+\end{equation*}
+for $v_h, w_h \in L(\Omega_h)$.
+
+For $m, n \in \{1, \dots, N-1\}$, $\Phi_{m,n,h}$ is an eigenvector of the 2D discrete laplacian $\Delta_h$.
+
+\begin{equation*}
+\Delta_h \Phi_{m,n,h}(x,y) = \frac{\Phi_{m,n,h}(x-h, y) - 2 \Phi_{m,n,h}(x, y) + \Phi_{m,n,h}(x+h, y)}{h^2} + \frac{\Phi_{m,n,h}(x, y-h) - 2 \Phi_{m,n,h}(x, y) + \Phi_{m,n,h}(x, y+h)}{h^2}
+\end{equation*}
+
+\begin{equation*}
+= \frac{\Phi_{m,h}(x - h) \Phi_{n,h}(y) - 2 \Phi_{m,h}(x) \Phi_{n,h}(y) + \Phi_{m,h}(x+h)\Phi_{n,h}(y)}{h^2} + \frac{\Phi_{m,h}(x) \Phi_{n,h}(y - h) - 2 \Phi_{m,h}(x) \Phi_{n,h}(y) + \Phi_{m,h}(x)\Phi_{n,h}(y+h)}{h^2}
+\end{equation*}
+
+\begin{equation*}
+= \frac{\Phi_{m,h}(x - h) - 2 \Phi_{m,h}(x) + \Phi_{m,h}(x+h) }{h^2} \Phi_{m,h}(y) +  \Phi_{m,h}(x) \frac{\Phi_{n,h}(y - h) - 2\Phi_{n,h}(y) + \Phi_{n,h}(y+h)}{h^2}
+\end{equation*}
+
+\begin{equation*}
+= \lambda_{m,h} \Phi_{m,h}(x) \Phi_{n,h}(y) + \Phi_{m,h}(x) \lambda_{n,h} \Phi_{n,y}(y) = (\lambda_{m,h} + \lambda_{n,h}) \underbrace{\Phi_{m,h}(x) \Phi_{n,h}(y)}_{= \Phi_{m,n,h}(x,y)}
+\end{equation*}
+
+We have proved that $\Phi_{m,n,h}$ is an eigenvector of 2D $\Delta_h$ with relevant eigenvalue $\lambda_{m, h} + \lambda_{n,h}$.
+
+Now, we prove that $\Phi_{m,n,h}, m,n \in \{1, \dots, N-1\}$ are orthogonal in the scalar product of $L(\Omega_h)$ we have introduced.
+
+For $m,n,p,q \in \{1, \dots, N-1\}$ with $(m, n) \neq (p, q)$:
+\begin{equation*}
+<\Phi_{m,n,h}, \Phi_{p,q,h}>_h = h^2 \sum_{k=1}^{N-1} \sum_{l=1}^{N-1} \Phi_{m,n,h}(kh, lh) \Phi_{p,q,h}(kh, lh)
+\end{equation*}
+
+\begin{equation*}
+= h^2 \sum_{k=1}^{N-1} \sum_{l=1}^{N-1} \Phi_{m,h}(kh)\Phi_{n,h}(lh) \Phi_{p,h}(kh)\Phi_{q,h}(lh)
+\end{equation*}
+
+\begin{equation*}
+= h^2 (\sum_{k=1}^{N-1} \Phi_{m,h}(kh)\Phi_{p,h}(kh)) (\sum_{l=1}^{N-1} \Phi_{n,h}(lh)\Phi_{q,h}(lh))
+\end{equation*}
+
+\begin{equation*}
+= \underbrace{<\Phi_{m,h}, \Phi_{p,h}>_h}_{1D scalar product} \cdot \underbrace{<\Phi_{n,h}, \Phi_{q,h}>_h}_{1D scalar product}
+\end{equation*}
+
+Remember $(m,n) \neq (p, q)$:
+\begin{equation*}
+m \neq p \text{ or } m n \neq q
+\end{equation*}
+so the above scalar product is zero.
+
+Since the $(N-1)^2$ functions $\Phi_{m,n,h}$, $m,n \in \{1, \dots, N-1\}$ are nonzero orthogonal functions, they $(N-1)^2$ linearly independent functions of $\mathbb{R}^{(N-1)^2}$ and so they constitute a bases for $\mathbb{R}^{(N-1)^2}$.
+
+So any $v_h \in L(\Omega_h)$ can be written as:
+\begin{equation*}
+v_h = \sum_{m=1}^{N-1} \sum_{n=1}^{N-1} \dots
+\end{equation*}
+
+Exactly as in the 1D case, we have:
+\begin{equation*}
+c_{m,n,h} = \frac{<v_h, \Phi_{m,n,h}>_h}{||\Phi_{m,n,h}||} \dots
+\end{equation*}
+
+\dots
+
+Now we are ready to give a bond for 
+\begin{equation*}
+||\Delta_h^{-1}|| = \sup_{f_h \in L(\Omega_h)} \frac{||v_h||_h}{||f_h||_h}
+\end{equation*}
+
+where $v_h$ is the solution of: $\Delta_h v_h = f_h$
+
+\dots
+
+Let $f_h \in L(\Omega_h)$ and let $v_h$ be the solution of $\Delta_h v_h = f_h$. Let:
+\begin{equation*}
+v_h = \sum_{m=1}^{N-1} \sum_{n=1}^{N-1} c_{m,n,h} \Phi_{m,n,h}
+\end{equation*}
+be the Fourier series of $v_h$.
+
+We have:
+\begin{equation*}
+f_h = \Delta_h v_h = \sum_{m=1}^{N-1} \sum_{n=1}^{N-1} c_{m,n,h} \underbrace{\Delta_h \Phi_{m,n,h}}_{(\lambda_{m,h} + \lambda_{n,h})\Phi_{m,n,h}} = \sum_{m=1}^{N-1} \sum_{n=1}^{N-1} c_{m,n,h} (\lambda_{m,h} + \lambda_{n,h}) c_{m,n,h} \Phi_{m,n,h}
+\end{equation*}
+which is the discrete Fourier series of $f_h$.
+
+So:
+\begin{equation*}
+||f_h||_h^2 = \sum_{m=1}^{N-1} \sum_{n=1}^{N-1} \underbrace{(\lambda_{m,h} + \lambda_{n,h})^2}_{||\Phi_{m,n,h}||_h^2} c_{m,n,h}^2
+\end{equation*}
+
+\begin{equation*}
+= \sum_{m=1}^{N-1} \sum_{n=1}^{N-1} (\underbrace{|\lambda_{m,h}|}_{\ge 8} + \underbrace{|\lambda_{n,h}|}_{\ge 8})^2 c_{m,n,h}^2 \ge \sum_{m=1}^{N-1} \sum_{n=1}^{N-1} 16^2 c_{m,n,h}^2
+\end{equation*}
+
+Then we have:
+\begin{equation*}
+||v_h||_h^2 \le \frac{1}{16^2} ||f_h||_h^2
+\end{equation*}
+
+\begin{equation*}
+||v_h||_h \le \frac{1}{16} ||f_h||_h
+\end{equation*}
+
+Since $f_h \in L(\Omega_h)$ is arbitrary:
+\begin{equation*}
+||\Delta_h^{-1}|| = \sup_{f_h \in L(\Omega_h)} \frac{||v_h||_h}{||f_h||_h} \le \frac{1}{16}
+\end{equation*}
+
+Remember we have:
+\begin{equation*}
+\Delta_h \underbrace{e_h}_{convergence error} = - \underbrace{\epsilon_h}_{consistency error}
+\end{equation*}
+
+So:
+\begin{equation*}
+||e_h||_h \le ||\Delta_h^{-1}|| ||\epsilon_h||_h \le \frac{1}{16} ||\epsilon_h||_h
+\end{equation*}
+
+In case of the $L^\infty$ norm, we had:
+\begin{equation*}
+||e_h||_{L^\infty(\Omega_h)} \le \frac{1}{8} ||\epsilon_h||_{L^\infty(\Omega_h)}
+\end{equation*}
+
+
+\subsubsection{Exercise}
+
+Prove that, for $v_h \in L(\Omega_h)$, we have:
+\begin{equation*}
+||v_h|| \le ||v_h||_{L^\infty(\Omega_h)}
+\end{equation*}
+
+and then conclude with the estimate:
+\begin{equation*}
+||e_h||_h = O(h^2), h \rightarrow 0
+\end{equation*}
+
+\begin{equation*}
+||v_h||_h = \sqrt{h^2 \sum_{m=1}^{N-1} \sum_{n=1}^{N-1} \underbrace{v_h(kh, nh)^2}_{\le ||v_h||_{L^\infty(\Omega_h)}^2}}
+\end{equation*}
+
+\begin{equation*}
+\le \sqrt{h^2 \sum_{m=1}^{N-1} \sum_{n=1}^{N-1} ||v_h||_{L^\infty(\Omega_h} } = ||v_h||_{L^\infty(\Omega_h} \sqrt{h^2 \sum_{m=1}^{N-1} \sum_{n=1}^{N-1} 1}
+\end{equation*}
+
+\begin{equation*}
+= ||v_h||_{L^\infty(\Omega_h} \underbrace{\sqrt{h^2 (N-1)}}_{= h (N-1)}
+\end{equation*}
+
+\begin{equation*}
+\le ||v_h||_{L^\infty(\Omega_h} \underbrace{h N}_{= 1} = ||v_h||_{L^\infty(\Omega_h}
+\end{equation*}
+
+Then:
+\begin{equation*}
+||e_h||_h \le \frac{1}{16} ||\epsilon_h||_h \le \frac{1}{16} \overbrace{||\epsilon_h||_{L^\infty(\Omega_h)}}^{= O(h^2), \, h \rightarrow 0}
+\end{equation*}
+
+and then:
+\begin{equation*}
+\qquad\qquad\qquad\qquad\qquad\qquad ||e_h||_h = O(h^2), \, h \rightarrow 0   \qquad\qquad\qquad\qquad\qquad\qquad \blacksquare
+\end{equation*}
+
+%\begin{equation*}
+%\end{equation*}
+

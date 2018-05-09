@@ -6,11 +6,11 @@ PDEs can be divided in three categories: elliptic, parabolic and high-parabolic.
 
 \section{Poisson 2D problem with Dirichlet boundary conditions}
 \begin{equation}
-\text{Poisson equation:\quad} \Delta u(x, y) = f(x, y), (x, y) \in \Omega
+\text{Poisson equation:\quad} \Delta u(x, y) = f(x, y), \quad (x, y) \in \Omega
 \end{equation}
 
 \begin{equation}
-\text{Dirichlet Boundary condition:\quad} u(x, y) = g(x, y), (x, y) \in \Gamma
+\text{Dirichlet Boundary condition:\quad} u(x, y) = g(x, y), \quad (x, y) \in \Gamma
 \end{equation}
 
 where $\Omega = (0, 1)^2$
@@ -132,7 +132,8 @@ So we got an approximation of the second derivative of the function $v$.
 
 \subsection{Discretization of the Laplacian}
 
-For a smooth function $v: \overline{\Omega_h} \rightarrow \mathbb{R}$ we approximate the Laplacian:
+For a smooth function $v: \overline{\Omega_h} \rightarrow \mathbb{R}$ we approximate the Laplacian:\\
+
 
 % 6
 
@@ -401,115 +402,820 @@ I_{N-1} &       A & \ddots &         &         \\
 
 A generic matrix with dimension $n \times n$ is called ``sparse" if the number of non-zero elements is $O(n)$.
 
-The matrix $\mathcal{A}$ is sparse, block tridiagonal (it has elements on the diagonal, on the diagonal of the upper matrix and on the diagonal of the lower matrix), symmetric and \dots.
+The matrix $\mathcal{A}$ is sparse, block \textit{tridiagonal} (it has elements on the diagonal, on the diagonal of the upper matrix and on the diagonal of the lower matrix), symmetric ($\mathcal{A}^T = \mathcal{A}$) and negative definite (all the eigenvalues are negative).
+
+Consider a symmetric (real eigen-values) matrix B $n \times n$, B is negative definite when:
 
 \begin{equation*}
+<x, Bx> = x^T B x = \sum_{i=1}^{m} \sum_{j=1}^{n} b_{ij} x_i x_j
+\end{equation*}
+
+is $ \le 0 \;\; \forall x: n \times 1$ vectors (negative semi-definite) and\\
+$< 0$ for $x \ne 0$.
+
+\subsection{$\mathcal{A}$ is negative definite}
+We are going to prove that $\mathcal{A}$ is negative definite, which then means that it is a non-singular matrix, which means that it can be inverted, which means that our system can be solved.
+
+First we prove that:
+
+\begin{equation*}
+<v, \mathcal{A}v> \le -2 \; {||v||}^2
+\end{equation*}
+for all $v \in \mathbb{R}^{N-1}$.
+
+\begin{equation*}
+<v, \mathcal{A}v> = \sum_{i=1}^{N-1} \sum_{j=1}^{N-1} a_{ij} v_i v_j =
+\end{equation*}
+\begin{equation*}
+-4 v_{1}^{2} + v_1 v_2 + v_2 v_1 -4 v_2^2 + v_2 v_3 + v_3 v_2 - 4 v_3^2 + \dots -4 v_{N-2}^2 + v_{N-2} v_{N-1} + v_{N-1} v_{N-2} -4 v_{N-1}^2 =
+\end{equation*}
+\begin{equation*}
+-4 v_1^2 -4 v_2^2 -4 v_3^2 + \dots -4 v_{N-2}^2 - 4 v_{N-1}^2 + 2 v_1 v_2 + 2 v_2 v_3 + \dots + 2 v_{N-2} v_{N-1} =
+\end{equation*}
+\begin{equation*}
+-3 v_1^2 - 2 v_2^2 - 2 v_3^2 + \dots - 2 v_{N-2}^2 - 3 v_{N-1}^2 - (v_1^2 - 2 v_1 v_2 + v_2^2) - (v_2^2 - 2 v_2 v_3 + v_3^2) + \dots + ( v_{N-2}^2 - 2 v_{N-2} v_{N-1} + v_{N-1}^2) =
+\end{equation*}
+\begin{equation*}
+-3 v_1^2 - 2 v_2^2 - 2 v_3^2 + \dots - 2 v_{N-2}^2 - 3 v_{N-1}^2 - (v_1 - v_2)^2 - (v_2 - v_3)^2 + \dots - (v_{N-2} - v_{N-1})^2 \le
+\end{equation*}
+\begin{equation*}
+-2 v_1^2 - 2 v_2^2 - 2 v_3^2 + \dots - 2 v_{N-2}^2 - 2 v_{N-1}^2 = -2 \underbrace{(v_1^2 + v_2^2 + v_3^2 + \dots + v_{N-2}^2 + v_{N-1}^2)} %{= || v ||_2^2}
+\end{equation*}
+
+
+Consider $v = (v_1, \dots, v_{N-1}) \in \mathbb{R}^{(N-1)^2}$, where $v_1, \dots, v_{N-1} \in \mathbb{R}^{N-1}$.
+
+\begin{equation*}
+<v, \mathcal{A}v> = v^T \mathcal{A} v = [v_1^T, v_2^T, \dots, v_{N-1}^T]
 \end{equation*}
 
 
 \begin{equation*}
+<x, Bx> = \sum_{i=1}^{m} \sum_{j=1}^{n} b_{ij} x_i x_j = \sum_{i=1}^{m} \sum_{j=1}^{n} <v_i, \mathcal{A}_ij v_j> = 
+\end{equation*}
+\begin{equation*}
+<v_1, A v_1> + <v_1, I v_2> + <v_2, I v_1> + <v_2, A v_2> + <v_2, I v_3> + <v_3, I v_2> + <v_3, A v_3> + \dots +
+\end{equation*}
+\begin{equation*}
++ <v_{N-2}, A v_{N-2}> + <v_{N-2}, v_{N-1}> + <v_{N-1}. v_{N-2}> + <v_{N-1}. A v_{N - 1}> =
+\end{equation*}
+\begin{equation*}
+\overbrace{<v_1, A v_1>}^{\le -2 ||v_1||_2^2} + \overbrace{<v_1, I v_2>}^{\le -2 || v_2 ||_2^2} + \overbrace{<v_2, I v_1>}^{\le -2 || v_3 ||_2^2} + \dots + \overbrace{<v_{N-2}, A v_{N-2}>}^{\le -2 || v_{N-2} ||_2^2} + \overbrace{<v_{N-1}, A v_{N - 1}>}^{\le -2 || v_{N-1} ||_2^2} + 2 \dots\dots \le
+\end{equation*}
+\begin{equation*}
+-2 ||v_1||_2^2 -2 ||v_2||_2^2 +\dots -2 ||v_{N-1}||_2^2 \dots\dots =
+\end{equation*}
+\begin{equation*}
+= - ||v_1||_2^2 - (||v_1||_2^2 -2 <v_1, v_2> + ||v_2||_2^2) - (||v_2||_2^2 -2 <v_2, v_3> + ||v_3||_2^2) + \dots - (||v_{N-2}||_2^2 -2 <v_{N-2}, v_{N-1}> + ||v_{N-1}||_2^2) - ||v_{N-1}||_2^2 =
+\end{equation*}
+\begin{equation*}
+= - ||v_1||_2^2 - ||v_1 - v_2||_2^2 - ||v_2 - v_3||_2^2 + \dots - ||v_{N-2} - v_{N-1}||_2^2 - ||v_{N-1}||_2^2 \le 0
+\end{equation*}
+
+Now we show that $<v, \mathcal{A}v> < 0$ for  $v \ne 0$.
+
+Equivalently, we show that $<v, \mathcal{A}v> = 0 \implies v = 0$.
+When $<v, \mathcal{A}v> = 0$, also 
+
+\begin{equation*}
+- ||v_1||_2^2 - ||v_1 - v_2||_2^2 - ||v_2 - v_3||_2^2 + \dots - ||v_{N-2} - v_{N-1}||_2^2 = 0
+\end{equation*}
+
+\dots
+
+\begin{equation*}
+||v_1||_2 = ||v_1 - v_2||_2 = \dots = ||v_{N-2} - v_{N-1}||_2 = ||v_{N-1}||_2 = 0
+\end{equation*}
+and so:
+\begin{equation*}
+v_1 = 0, v_1 = v_2, \dots, v_{N-1} = 0
+\end{equation*}
+
+and so:
+\begin{equation*}
+v_1 = v_2 = \dots = v_{N-1} = 0
+\end{equation*}
+and so:
+\begin{equation*}
+v = 0
+\end{equation*}
+
+\subsubsection*{Exercise}
+
+Write the 1D Poisson problem with Dirichlet Boundary condition on $\Omega = (0, 1)$.
+
+By definition, the Laplacian is: $\frac{\partial^2}{\partial x^2} (x,y) + \frac{\partial^2 u}{\partial y^2} (x,y)$.
+
+The 1D version of the Poisson problem is: $u''(x) = f(x), \quad x \in \Omega = (0,1)$
+$u(x) = g(x), \quad x \in \Gamma$ : $u(0) = g(0), u(1) = g(1)$.
+
+
+Solve analytically this problem:
+
+$u'(x) = u'(0) + \int_{0}^{x} \underbrace{u''(s)}_{f(s)} ds$, \quad $x \in [0, 1]$.
+
+\begin{equation*}
+u(x) = u(0) + \int_{0}^{x} u'(s) ds = u(0) + \int_{0}^{x} (u'(0) + (\int_{0}^{s} f(\delta) d\delta) \;\, ds = 
+\end{equation*}
+\begin{equation*}
+u(0) + u'(0) \int_{0}^{x} ds + \int_{0}^{x} \int_{0}^{s} f(\delta) d\delta ds = 
+\end{equation*}
+
+\begin{equation*}
+u(x) = u(0) + u'(0) x + \int_{0}^{x} \int_{0}^{s} f(\delta) d\delta ds \quad x \in [0, 1]
+\end{equation*}
+
+$u(0) = g(0)$
+$u(1) = u(0) + u'(0) + \int_{0}^{1} \int_{0}^{s} f(\delta) d\delta ds \quad x \in [0, 1]$
+
+\dots\dots
+
+
+Propose a corresponding discrete problem and write the associated linear system:
+
+$\Omega = (0, 1)$, $h = 1/N$ with $N$ positive integer.
+$\Omega_h = {h, 2h, \dots, (N-1) h}$
+
+The discrete problem is:
+
+\begin{equation*}
+\Delta_h u_h (x) = f(x), \quad x \in \Omega_h
+u_h (0) = g(0)
+u_h (1) = g(1)
+\end{equation*}
+
+$\Delta_h$ associates to a function $\overline{\Omega_h} \rightarrow \mathbb{R}$ a function $\Omega_h \rightarrow \mathbb{R}$ that approximates $\Delta u = u''$.
+
+For a function $v_h: \overline{\Omega_h} \rightarrow \mathbb{R}$, we define:
+\begin{equation*}
+\Delta_h v_h(x) = \frac{v_h(x-h) - 2 v_h(x) + v_h(x+h)}{h^2}, \quad x \in \Omega_h
+\end{equation*}
+
+We can rewrite the discrete problem as:
+\begin{equation*}
+u_i = u_h(ih), \quad i \in {1, \dots, N-1}
+\end{equation*}
+\begin{equation*}
+f_i = f(ih)
+\end{equation*}
+\begin{equation*}
+g_0 = g(0), \; g_N = g(1)
+\end{equation*}
+
+\begin{equation*}
+\frac{u_{i-1} - 2 u_i + u_i+1}{h^2} = f_i, \quad i \in {1, \dots, N-1}
+\end{equation*}
+
+with $u_0 = g_0, \quad u_N = g_N$,
+
+\begin{equation*}
+u_{i-1} - 2 u_i + u_i+1 = h^2 f_i, \quad i \in {1, \dots, N-1}
+\end{equation*}
+
+with $u_0 = g_0, \quad u_N = g_N$.
+
+The linear system is:
+
+We can write a matrix:
+
+\begin{equation*}
+\begin{bmatrix}
+-2 &  1 &    &    &    &    &    \\
+ 1 & -2 &  1 &    &    &    &    \\
+   &  1 & \ddots &  \ddots &    &    &    \\
+ & & \ddots &   &   & & \\
+
+   &    &    &    &  1 & -2 &  1 \\
+   &    &    &    &    &  1 & -2 \\
+\end{bmatrix}
+\end{equation*}
+
+and the unknown vector is:
+
+\begin{equation*}
+u = \begin{bmatrix}
+h^2 f_{1} - g_{0}   \\
+h^2 f_{2}           \\
+h^2 f_{3}           \\
+\dots               \\
+h^2 f_{N-2}         \\
+h^2 f_{N-1} - g_{N} \\
+\end{bmatrix}
+\end{equation*}
+
+For $v \in \mathbb{R}^{N-1}$: $<v, \mathcal{A}v$ = $-2 v_1^2 + v_1 v_2 + v_2 v_1 - 2 v_2^2 + \dots$\\
+$. \qquad \quad \qquad \qquad \qquad \qquad \qquad \qquad  + v_{N-2} v_{N-1} + v_{N-1} v_{N-2} + 2 v_N^2 =$
+
+\begin{equation*}
+- v_1^2 - (v_1 - v_2)^2 - (v_2 - v_3)^2 + \dots - (v_{N-2} - v_{N-1})^2 - v_{N-1}^2 \le 0
+\end{equation*}
+
+If $<v, \mathcal{A}v> = - v_1^2 - (v_1 - v_2)^2 + \dots - (v_{N-2} - v_{N-1})^2 - v_{N-1}^2 = 0$ then $v_1 = 0, v_1 - v_2 = 0, \dots, v_{N-2} - v_{N-1} = 0, v_{N-1} = 0$ and so $v = 0$.
+
+
+\subsubsection*{Exercise}
+
+Consider the 3D Poisson problem with Dirichlet boundary conditions on $\Omega = (0, 1)^3$.
+Propose a discrete Laplacian and a consequent discrete problem.
+
+\begin{equation*}
+\Delta u(x, y, z) = f(x, y, z), \quad (x, y, z) \in \Omega = (0, 1)^3
+\end{equation*}
+
+\begin{equation*}
+u(x, y, z) = g(x, y, z), \quad (x, y, z) \in \Gamma
+\end{equation*}
+
+\begin{equation*}
+\Delta u(x, y, z) = \frac{\partial^2 u}{\partial x^2} (x, y, z) + \frac{\partial^2 u}{\partial y^2} (x, y, z) + \frac{\partial^2 u}{\partial z^2} (x, y, z)
+\end{equation*}
+
+\begin{equation*}
+\Omega_h = \Omega \cap \mathbb{R}^3_h
+\end{equation*}
+
+\begin{equation*}
+\mathbb{R}^3_h = {(mh, uh, ph) : m,n,p \in \mathbb{Z}}
+\end{equation*}
+
+$\Gamma_h$ in 2D was the border without the corners. In 3D is the set of faces, without the edges and the corners.
+$\Gamma_h = $ "points of $\mathbb{R}^3_h \cap \Gamma$ with a neighbor in $\Omega_h$"
+
+The discrete problem then is 
+
+\begin{equation*}
+\Delta_h u(x, y, z) = f(x, y, z), \quad (x, y, z) \in \Omega_h
+\end{equation*}
+
+\begin{equation*}
+u_h(x, y, z) = g(x, y, z), \quad (x, y, z) \in \Gamma_h
+\end{equation*}
+
+The discrete Laplacian is given by a mesh function $v: \overline{\Omega_h} = \Omega_h \cup \Gamma_h \rightarrow \mathbb{R}$
+
+\begin{equation*}
+\Delta_h v_h(x, y, z) = \frac{v(x-h, y, z) - 2v(x,y,z) + v(x+h, y, z)}{h^2} +\\
+\frac{v(x, y-h, z) - 2v(x,y,z) + v(x, y+h, z)}{h^2} + \frac{v(x, y, z-h) - 2v(x,y,z) + v(x, y, z+h)}{h^2} \quad (x, y, z) \in \Omega_h
+\end{equation*}
+
+Describe in the matrix of the linear system associated to the discrete problem the row corresponding to a mesh point in $\Omega_h$ with nearest neighbors in $\Omega_h$.
+
+In order to write our problem in this way: $\mathcal{A} U = b$ we need to order the unknowns.
+There are $(N-1)^3$ unknowns, where $h = \frac{1}{N}$; therefore $\mathcal{A}$ is a $(N-1)^3 \times (N-1)^3$ matrix.
+
+What is the equation of a point whose neighbors are part of $\Omega_h$?
+
+We construct the matrix from the equation $\Delta_h u_h(x, y, z) = f(x, y, z)$; which becomes $h^2 \Delta_h u_h(x, y, z) = h^2 f(x, y, z)$
+
+%\begin{equation*}
+$
+-6 \overbrace{u(x, y, z)}^{= u_{ijk} = U_l} + \overbrace{u_h(x-h, y, z)}^{= u_{l-1}} + \overbrace{u_h(x+h, y, z)}^{= u_{l+1}} +\\
+.\qquad\qquad\qquad \; \; + \overbrace{u_h(x, y-h, z)}^{= u_{l-(N-1)}} + \overbrace{u_h(x, y+h, z)}^{= u_{l+(N-1)}} +\\
+.\qquad\qquad\qquad \; \; + \overbrace{u_h(x, y, z-h)}^{= u_{l- (N-1)^2}} + \overbrace{u_h(x, y, z+h)}^{= u_{l+ (N-1)^2}} =
+h^2 f(x, y, z)
+$
+%\end{equation*}
+
+\begin{equation*}
+%U_{l-(N-1)^2} + U_{l-(N-1)^} + U_{l-1} - 6 U_{l} + U_{l+1} + U_{l+(N-1)} + U_{l+(N-1)^2} = h^2 f_l
+\end{equation*}
+
+\dots
+
+\section{Convergence analysis of the discrete Poisson problem (with D. b.c)}
+
+We assume that the continuous problem has a unique solution $u$.
+
+We want to prove that the discrete problem has a unique solution $u_h$ (already done, but we obtain this by using another technique) and we want to give a bound on the error:
+
+\begin{equation*}
+\max_{(x,y) \in \overline{\Omega}_h} |u_h (x, y) - u(x, y)|
+\end{equation*}
+
+This bound will prove the convergence of $\mu_h$ to $u$ as $h \rightarrow 0$.
+
+
+\subsection{Theorem: Discrete maximum principle}
+
+Let $v_h: \overline{\Omega}_h \rightarrow \mathbb{R}$ such that:
+
+\begin{equation*}
+\Delta_h v_h \ge 0 \qquad \forall (x, y) \in \Omega_h
+\end{equation*}
+
+Then:
+\begin{equation*}
+\max_{(x,y) \in \Omega_h} v_h (x, y) \le \max_{(x,y) \in \Gamma_h} v_h (x, y)
+\end{equation*}
+
+with equality iff $v_h$ is constant.
+
+\subsubsection{Continuous maximum principle}
+
+Let $v: \overline{\Omega} \rightarrow \mathbb{R}$ of class $C^2$ such that:
+
+\begin{equation*}
+\Delta v (x,y) \ge 0 \qquad \forall (x, y) \in \Omega
+\end{equation*}
+
+Then:
+\begin{equation*}
+\sup_{(x,y) \in \Omega} v(x, y) \le \max_{(x,y) \in \Gamma} v(x, y)
+\end{equation*}
+
+
+\subsubsection{Proof of the Discrete maximum principle theorem}
+
+We have to prove that:
+\begin{equation*}
+\max_{(x,y) \in \Omega_h} v_h(x, y) \le \max_{(x,y) \in \Gamma_h} v_h(x, y) 
+\end{equation*}
+
+with $=$ iff $v_h$ is constant.
+
+We begin by observing if $v_h$ is constant, then:
+\begin{equation*}
+\max_{(x,y) \in \Omega_h} v_h(x, y) = \max_{(x,y) \in \Gamma_h} v_h(x, y) 
+\end{equation*}
+
+Given two logical sentences $A$ and $B$, $A \implies B$ is equivalent to $\neg B \implies \neg A$
+
+When $v_h$ is not constant ($A$), then ($B$):
+\begin{equation*}
+\max_{(x,y) \in \Omega_h} v_h(x, y) < \max_{(x,y) \in \Gamma_h} v_h(x, y) 
+\end{equation*}
+
+Therefore we prove the counter-opposite ($\neg B$) of the previous equation.
+\begin{equation*}
+\max_{(x,y) \in \Omega_h} v_h(x, y) > \max_{(x,y) \in \Gamma_h} v_h(x, y) 
+\end{equation*}
+which means that $v_h$ is not constant ($\neg A$).
+
+Suppose:
+\begin{equation*}
+\max_{(x,y) \in \Omega_h} v_h(x, y) \ge \max_{(x,y) \in \Gamma_h} v_h(x, y) 
+\end{equation*}
+
+So:
+\begin{equation*}
+\max_{(x,y) \in \Omega_h} v_h(x, y) = \max_{(x,y) \in \Gamma_h} v_h(x, y) 
+\end{equation*}
+
+Consider now a point $(x_0, y_0) \in \Omega_h$ where $v_h$ is the maximum.
+
+We prove that all $(x_0 - h, y_0), (x_0 + h, y_0), (x_0, y_0 - h), (x_0, y_0 + h)$ are maximum points for $v_h$.
+
+We have:
+\begin{equation*}
+h^2 \Delta_h v_h(x_0, y_0) \ge 0
+\end{equation*}
+\begin{equation*}
+= v_h(x_0, y_0 - h) + v_h(x_0 - h, y_0) - 4 v_h(x_0, y_0) + v_h(x_0 + h, y_0) + v_h(x_0, y_0 + h)
+\end{equation*}
+
+and then:
+\begin{equation*}
+4 v_h(x_0, y_0) \le \overbrace{v_h(x_0, y_0 - h)}^{v_h (x_0, y_0)} + \overbrace{v_h(x_0 - h, y_0)}^{v_h (x_0, y_0)} + \overbrace{v_h(x_0 + h, y_0)}^{v_h (x_0, y_0)} + \overbrace{v_h(x_0, y_0 + h)}^{v_h (x_0, y_0)}
+\end{equation*}
+which means that the second member must be $\le 4 v_h (x_0, y_0)$.
+
+Thus:
+\begin{equation*}
+4 v_h(x_0, y_0) = v_h(x_0, y_0 - h) + v_h(x_0 - h, y_0) + v_h(x_0 + h, y_0) + v_h(x_0, y_0 + h)
+\end{equation*}
+
+and it follows that:
+\begin{equation*}
+v_h(x_0, y_0 - h) = v_h(x_0 - h, y_0) = v_h(x_0 + h, y_0) = v_h(x_0, y_0 + h) = v_h(x_0, y_0)
+\end{equation*}
+
+We have proved that $(x_0 - h, y_0), (x_0 + h, y_0), (x_0, y_0 - h), (x_0, y_0 + h)$ are maximum points for $v_h$; this argument can be repeated recursively for all the neighbors, which means that they all have value $v_{max}$; we obtain that all the mesh points obtain the maximum value $v_{max}$, and $v_h$ is constant. $\blacksquare$
+
+\subsection{Corollary of the Discrete maximum principle}
+
+Let $v_h: \overline{\Omega}_h \rightarrow \mathbb{R}$ such that:
+
+\begin{equation*}
+\Delta_h v_h (x,y) \le 0 \qquad \forall (x, y) \in \Omega_h
+\end{equation*}
+
+\begin{equation*}
+\min_{(x,y) \in \Omega_h} v_h(x, y) \ge \min_{(x,y) \in \Gamma_h} v_h(x, y) 
+\end{equation*}
+
+
+\subsubsection{Proof}
+Consider $w_h = - v_h$. We have:
+
+\begin{equation*}
+\Delta_h w_h (x, y) = - \Delta_h v_h (x, y) \ge 0 \forall (x, y) \in \Omega_h
+\end{equation*}
+
+From the discrete maximum principle, we have:
+\begin{equation*}
+\max_{(x, y) \in \Omega_h} \overbrace{w_h (x, y)}^{= - v_h(x, y)} \le \max_{(x, y) \in \Gamma_h} \overbrace{w_h (x, y)}^{= - v_h(x, y)}
+\end{equation*}
+$\blacksquare$
+
+\subsection{Theorem:}
+
+The discrete Poisson problem (with D. b.c.) has a unique solution.
+
+\subsubsection{Proof:}
+
+The discrete problem is written as a linear system: $\mathcal{A} U = b$.
+
+Existence and uniqueness of the solution of the discrete problem follows by the non singularity of the matrix $\mathcal{A}$.
+
+$\mathcal{A}$ is non singular if:
+
+\begin{equation*}
+\mathcal{A} U = 0 \implies U = 0
+\end{equation*}
+
+We are now going to prove this implication.
+
+$\mathcal{A} U = 0$ is obtained for the discrete problem:
+
+
+\begin{equation*}
+\Delta_h u_h(x, y) = 0, \quad (x, y) \in \Omega_h
+\end{equation*}
+
+\begin{equation*}
+u_h(x, y) = 0, \quad (x, y) \in \Gamma_h
+\end{equation*}
+
+Now we show that $u_h = 0$ (i.e. $U = 0$).
+
+We have:
+
+\begin{equation*}
+\Delta_h u_h(x, y) \ge 0, \quad (x, y) \in \Omega_h
+\end{equation*}
+
+and from the discrete max principle:
+
+\begin{equation*}
+\max_{(x, y) \in \Omega_h} u_h(x, y) \le \max_{(x, y) \in \Gamma_h} u_h(x, y) = 0
+\end{equation*}
+
+Moreover, we have:
+\begin{equation*}
+\Delta_h u_h(x, y) \le 0, \quad (x, y) \in \Omega_h
+\end{equation*}
+
+and then from the discrete min principle:
+
+\begin{equation*}
+\min_{(x, y) \in \Omega_h} u_h(x, y) \ge \min_{(x, y) \in \Gamma_h} u_h(x, y) = 0
+\end{equation*}
+
+For any $(x, y) \in \Omega_h$ we have: $0 \le u_h(x, y) \le 0$, and so: $u_h(x, y) = 0$. $\blacksquare$
+
+\section{$\infty$-norm and $L^\infty$ norm}
+
+Given a function $f: \mathcal{A} \rightarrow \mathbb{R}$, we set:
+
+\begin{equation*}
+||f||_{L^\infty(\mathcal{A})} := \sup_{x \in \mathcal{A}} |f(x)|
+\end{equation*}
+
+When A is finite or $\mathcal{A} sub \mathbb{R}^d$ closed and bounded (i.e. compact) then:
+
+\begin{equation*}
+||f||_{L^\infty(\mathcal{A})} := \max_{x \in \mathcal{A}} |f(x)|
+\end{equation*}
+
+$L^\infty(\mathcal{A})$ is the set of functions $f: \mathcal{A} \rightarrow \mathbb{R}$ such that $||f||_{L^\infty(\mathcal{A})} < +\infty$.
+
+We have, for $v: \overline{\Omega} \rightarrow \mathbb{R}$ of class $C^4$:
+
+\begin{equation*}
+\max_{(x, y) \in \Omega_h} {|\Delta_h v|}_{\overline{\Omega_h}} (x, y) - \Delta v(x, y)| \le \frac{h^2}{6} \max\{\max_{(x, y) \in \overline{\Omega}} |\frac{\partial^4 v}{\partial x^4} (x, y)|, \max_{(x, y) \in \overline{\Omega}} |\frac{\partial^4 v}{\partial y^4} (x, y)|\}
+\end{equation*}
+
+\begin{equation*}
+||\Delta_h v{|}_{\overline{\Omega_h}} (x, y) - \Delta v(x, y)||_{L^\infty(\Omega_h)} \le \frac{h^2}{6} \max\{ ||\frac{\partial^4 v}{\partial x^4}||_{L^\infty(\overline{\Omega_h})}, ||\frac{\partial^4 v}{\partial y^4}||_{L^\infty(\overline{\Omega_h})} \}
+\end{equation*}
+
+The stability result says that the map: $(f, g) \rightarrowtail u_h$ (underbraces: data for the discrete problem ... solution of the discrete problem) is uniformly bounded with respect to h, i.e.:
+
+\begin{equation*}
+||u_h||_{L^\infty(\overline{\Omega_h})} \le C \cdot \max \{ ||f||_{L^\infty(\Omega)}, ||g||_{L^\infty(\Gamma)} \}
+\end{equation*}
+
+with a constant C independent of $f$, $g$ and $h$.
+
+\subsection{Theorem (stability problem)}
+
+Let $f \in L^\infty(\Omega)$ and let $g \in L^\infty(\Gamma)$ and let $u_h$ be the solution of the discrete problem:
+
+\begin{equation*}
+\Delta_h u_h = f(x, y), \qquad (x, y) \in \Omega_f
+\end{equation*}
+
+\begin{equation*}
+u(x, y) = g(x, y) \qquad (x, y) \in \Gamma_h
+\end{equation*}
+
+Then we have:
+
+\begin{equation*}
+{||u_h||}_{L^\infty(\overline{\Omega})} \le \frac{1}{8} \overbrace{{||f||}_{L^\infty(\Omega)}}^{\le max} + \overbrace{{||g|}_{L^\infty(\Gamma)}}^{\le max}
+\end{equation*}
+
+
+\subsubsection{Proof:}
+We introduce the mesh function:
+
+\begin{equation*}
+\Phi(x, y) = \frac{(x - \frac{1}{2})^2 + (y - \frac{1}{2})^2}{4} = \frac{d^2}{4}, \quad (x, y) \in \overline{\Omega_h}
+\end{equation*}
+
+We have:
+
+\begin{equation*}
+\Delta_h \Phi(x, y) = 1, \quad (x, y) \in \Omega_h
+\end{equation*}
+
+\begin{equation*}
+\Delta_h \Phi(x, y) = \frac{\Phi(x, y-h) + \Phi(x - h, y) - 4 \Phi(x, y) + \Phi(x + h, y) + \Phi(x, y + h)}{h^2}
+\end{equation*}
+
+\begin{equation*}
+\Phi(x, y - h) = \frac{(x - \frac{1}{2})^2 + (y - h - \frac{1}{2})^2}{4} = \frac{(x - \frac{1}{2})^2 + (y - \frac{1}{2})^2 - 2(y - \frac{1}{2})h + h^2}{4}
+\end{equation*}
+
+\begin{equation*}
+\Phi(x - h, y) = \frac{(x - \frac{1}{2})^2 + (y - \frac{1}{2})^2 - 2(x - \frac{1}{2})h + h^2}{4}
+\end{equation*}
+
+\begin{equation*}
+-4 \Phi(x, y) = \frac{-4(x - \frac{1}{2})^2 - 4(y - \frac{1}{2})^2}{4}
+\end{equation*}
+
+\begin{equation*}
+\Phi(x, y + h) = \frac{(x - \frac{1}{2})^2 + (y - \frac{1}{2})^2 + 2(x - \frac{1}{2})h + h^2}{4}
+\end{equation*}
+
+\begin{equation*}
+\Phi(x + h, y) = \frac{(x - \frac{1}{2})^2 + (y - \frac{1}{2})^2 + 2(y - \frac{1}{2})h + h^2}{4}
+\end{equation*}
+
+which means
+\begin{equation*}
+\Delta_h \Phi(x, y) = \frac{\frac{4 h^2}{4}}{h^2} = 1
+\end{equation*}
+
+We have:
+
+\begin{equation*}
+0 \le \Phi(x,y) \le \frac{1}{8}, \quad (x, y) \in \overline{\Omega_h}
+\end{equation*}
+
+\begin{equation*}
+\Phi(x, y) = \frac{d^2}{4} \le \frac{l^2}{4} = \frac{(\frac{\sqrt{2}}{2})^2}{4} = \frac{(\frac{1}{\sqrt{2}})^2}{4}
+\end{equation*}
+
+where $l$ is the diagonal from the center of the square to a corner:
+
+We prove that $\Delta_h$ is a linear operator, i.e. for $v_h, w_h: \overline{\Omega_h} \rightarrow \mathbb{R}$ we have:
+
+\begin{equation*}
+\Delta_h(v_h + w_h) = \Delta_h v_h + \Delta_h w_h
+\end{equation*}
+
+for $v_h: \overline{\Omega_h} \rightarrow \mathbb{R}$ and $\alpha \in \mathbb{R}$ we have:
+
+\begin{equation*}
+\Delta_h \dots
+\end{equation*}
+
+For $(x, y) \in \Omega_h$:
+
+\begin{equation*}
+\Delta_h(v_h + w_h)(x, y) = ( v_h(x, y-h) + w_h(x, y-h) + v_h(x-h, y) + w_h(x-h, y) - 4 v_h(x,y) - 4 w_h(x, y) + v_h(x, y+h) + w_h(x, y+h) + v_h(x+h, y) + w_h(x+h, y) ) \cdot \frac{1}{h^2} = 
+\end{equation*}
+
+\begin{equation*}
+= ( v_h(x, y-h)+ v_h(x-h, y) - 4 v_h(x,y) + v_h(x, y+h) + v_h(x+h, y)) \cdot \frac{1}{h^2} + ( w_h(x, y-h) + w_h(x-h, y) - 4 w_h(x, y) + w_h(x, y+h) + w_h(x+h, y) ) \cdot \frac{1}{h^2} = 
+\end{equation*}
+
+\begin{equation*}
+= \Delta_h v_h(x, y) + \Delta_h w_h(x, y)
 \end{equation*}
 
 
 \begin{equation*}
+\Delta_h(\alpha v_h)(x,y) = ( \alpha v_h(x, y-h) + \alpha v_h(x-h, y) - \alpha 4 v_h(x,y) + \alpha v_h(x, y+h) + \alpha v_h(x+h, y)) \cdot \frac{1}{h^2} = \alpha (v_h(x, y)) \dots
 \end{equation*}
 
+Set:
+\begin{equation*}
+A := {||f||}_{L^\infty(\Omega)}, B := {||g||}_{L^\infty(\Gamma)}
+\end{equation*}
+
+For $(x, y) \in \Omega_h$:
+\begin{equation*}
+\Delta_h (u_h + A\Phi) (x, y) = \Delta_h u_h(x, y) + A \underbrace{\Delta_h \Phi(x, y)}_{=1} = \Delta_h u_h(x, y) + A = f(x, y) + A \ge - |f(x, y)| + \underbrace{A}_{= \sup_{(x, y) \in \Omega} |f(x, y)} \ge 0
+\end{equation*}
 
 \begin{equation*}
+\Delta_h (u_h - A\Phi) (x, y) = \Delta_h u_h(x, y) - A \underbrace{\Delta_h \Phi(x, y)}_{=1} = \Delta_h u_h(x, y) - A = f(x, y) - A \le |f(x, y)| - \underbrace{A}_{= \sup_{(x, y) \in \Omega} |f(x, y)} \le 0
 \end{equation*}
 
+The discrete maximum principle says that:
+\begin{equation*}
+\max_{(x, y) \in \Omega_h} (u_h + A \Phi) (x, y) \le \max_{(x, y) \in \Gamma_h} (u_h + A \Phi) (x, y) 
+\end{equation*}
 
 \begin{equation*}
+\min_{(x, y) \in \Omega_h} (u_h - A \Phi) (x, y) \ge \max_{(x, y) \in \Gamma_h} (u_h - A \Phi) (x, y) 
 \end{equation*}
-
 
 \begin{equation*}
+\max_{(x, y) \in \Omega_h} u_h(x, y) \le \max_{(x, y) \in \Omega_h} (\underbrace{u_h + \overbrace{A \Phi(x, y)}^{\ge 0}}_{= (u_h + A \Phi) (x, y)}) \le
 \end{equation*}
-
 
 \begin{equation*}
+\le \max_{(x, y) \in \Gamma_h} (\underbrace{u_h + A \Phi(x, y)}_{= (u_h + A \Phi) (x, y)}) = \max_{(x, y) \in \Gamma_h} (g(x, y) + A \underbrace{\Phi(x,y)}_{\le \frac{1}{8}}) \le \max_{(x, y) \in \Gamma_h}(g(x, y) - \frac{1}{8}A) = \max_{(x, y) \in \Gamma_h} \underbrace{g(x, y)}_{\ge -|g(x, y)|} + \frac{1}{8}A \le - \max_{(x, y) \in \Gamma_h} |g(x, y)| - \frac{1}{8}A \le - \dots
 \end{equation*}
 
+The opposite with the $\min$.
+
+We have proved, for $(x, y) \in \overline{\Omega_h}$:
 
 \begin{equation*}
+-\frac{1}{8}A - B \le u_h(x, y) \le \frac{1}{8}A + B
 \end{equation*}
 
+This is exactly the same of:
 
 \begin{equation*}
+|u_h(x, y)| \le \frac{1}{8}A + B
 \end{equation*}
 
+In other words:
+\begin{equation*}
+||u_h||_{L^\infty()} \dots
+\end{equation*}
 
 \begin{equation*}
+|| \Delta_h v|_{\Omega_h} - (\Delta_h v)|_{\Omega_h} ||_{L^\infty(\Omega_h)}
 \end{equation*}
-
 
 \begin{equation*}
+|| u_h - u|_{\overline{\Omega_h}}  ||
 \end{equation*}
 
+\subsection{Theorem (the convergence theorem)}
+
+Let $u$ be the solution of:
 
 \begin{equation*}
+\Delta u(x, y) = f(x, y) \quad (x, y) \in \Omega
 \end{equation*}
-
 
 \begin{equation*}
+u(x, y) = g(x, y) \quad (x, y) \in \Gamma
 \end{equation*}
 
+and let $u_h$ be the solution of:
+\begin{equation*}
+\Delta u_h(x, y) = f(x, y) \quad (x, y) \in \Omega_h
+\end{equation*}
 
 \begin{equation*}
+u_h(x, y) = g(x, y) \quad (x, y) \in \Gamma_h
 \end{equation*}
 
+We have:
 
 \begin{equation*}
+|| u_h - u|_{\Omega_h} ||_{L^\infty(\overline{\Omega_h})} \le \frac{1}{8} ||\Delta_h u|_{\Omega_h} - (\Delta u)|_{\Omega_h} ||_{L^\infty(\Omega_h)}
 \end{equation*}
 
+\subsubsection{Proof:}
+
+We set:
+\begin{equation*}
+l_h := u_h - u|_{\overline{\Omega_h}}
+\end{equation*}
+
+We have:
+\begin{equation*}
+\Delta_h l_h = \Delta_h (u_h - u|_{\overline{\Omega_h}}) = \Delta_h u_h - \Delta_h u|_{\overline{\Omega_h}} = \Delta_h u_h - (\Delta u)|_{\Omega_h} + (\Delta u)|_{\Omega_h} - \Delta_h u|_{\Omega_h}
+\end{equation*}
+
+We have, for $(x, y) \in \Omega_h$
+\begin{equation*}
+\Delta_h u_h(x, y) - \Delta u (x, y) = g(x, y) - f(x, y) = 0
+\end{equation*}
+
+We have:
+\begin{equation*}
+\Delta_h l_h = - \epsilon_h
+\end{equation*}
+
+where
+\begin{equation*}
+\epsilon_h = \Delta_h u|_{\Omega_h} - (\Delta u)|_{\Omega_h}
+\end{equation*}
+
+For $(x, y) \in \Gamma_h$:
+\begin{equation*}
+l_h (x, y) = u_h (x, y) - u(x, y) = \dots
+\end{equation*}
+
+By concluding, we can say that the important error $l_h$ satisfies the discrete problem:
+\begin{equation*}
+\Delta_h \epsilon_h (x, y) = - \epsilon_h(x, y) \qquad (x, y) \in \Omega_h
+\end{equation*}
 
 \begin{equation*}
+l_h(x, y) = 0 \qquad (x, y) \in \Gamma_h
 \end{equation*}
 
+By means of the previous theorem:
+\begin{equation*}
+||l_h||_{L^\infty(\overline{\Omega_h})} \le \frac{1}{8} \underbrace{|| -\epsilon_h||_{L^\infty(\Omega_h)}}_{= || \epsilon_h ||_{L^\infty(\Omega_h)} } + \underbrace{||o||_{L^\infty(\Gamma_h)}}_{= 0} \le \frac{1}{8} ||\epsilon_h||_{L^\infty(\Omega_h)} + \dots
+\end{equation*}
+$\blacksquare$
+
+We know that:
+\begin{equation*}
+|| \Delta_h u|_{\Omega_h} - (\Delta u)|_{\Omega_h} ||_{L^\infty(\Omega_h)} \le \frac{h^2}{6} \max \{ ||\frac{\partial^4 u}{\partial x^4}||_{L^\infty(\overline{\Omega_h})}, ||\frac{\partial^4 v}{\partial y^4}||_{L^\infty(\overline{\Omega_h})} \}
+\end{equation*}
+
+and then:
+\begin{equation*}
+|| u_h - u|_{\overline{\Omega_h}} ||_{L^\infty(\overline{\Omega_h})} \le \frac{h^2}{48} \max \{ ||\frac{\partial^4 u}{\partial x^4}||_{L^\infty(\overline{\Omega_h})}, ||\frac{\partial^4 v}{\partial y^4}||_{L^\infty(\overline{\Omega_h})} \}
+\end{equation*}
+when $u \in C^4$.
+
+\subsection{Some final remarks}
+
+Consider:
+\begin{itemize}
+	\item $u$ is the solution of the continuous problem;
+	\item $u_h$ is the solution of the discrete problem;
+	\item $\Delta_h$ is a discrete Laplacian, not necessarily the five-point discretization.
+\end{itemize}
+
+We define:
+\begin{equation*}
+l_h := u_h - u|_{\overline{\Omega_h}}
+\end{equation*}
+
+$l_h$ is called the \textit{convergence error}:
+\begin{equation*}
+\epsilon_h := \Delta_h u|_{\Omega_h} - (\Delta u)|_{\Omega_h}
+\end{equation*}
+
+$\epsilon_h$ is called the \textit{consistency error}.
+
+We are interested on $l_h$, since $\epsilon_h$ is a "surrogate" of $l_h$.\\
+
+
+We say that, given $p$ a positive integer:
+
+\begin{itemize}
+	\item the discretization is \textit{consistent of order $p$} if:
+		\begin{equation*}
+		|| \epsilon_h ||_{L^\infty(\Omega_h)} = O(h^p) \qquad N \rightarrow \infty
+		\end{equation*}
+	\item the discretization is \textit{convergent of order $p$} if
+		\begin{equation*}
+		|| l_h ||_{L^\infty(\overline{\Omega_h})} = O(h^p) \qquad N \rightarrow \infty
+		\end{equation*}
+		
+	\item the discretization is \textit{stable} if the solution $v_h$ of the discrete problem:
+		\begin{equation*}
+		\Delta_h v_h(x, y) = l(x,y), \qquad (x, y) \in \Omega_h
+		\end{equation*}
+		\begin{equation*}
+		v_h(x, y) = 0
+		\end{equation*}
+	
+		we have:
+		\begin{equation*}
+		|| v_h ||_{L^\infty(\overline{\Omega_h})} \le C || l ||_{L^\infty(\Omega)}
+		\end{equation*}
+		
+		where $C$ is independent of $l$ and $h$.
+\end{itemize}
+
+We have: consistency of order $p$ and stability $\implies$ convergence of order $p$.
+
+We have:
+\begin{equation*}
+\Delta_h \l_h = \epsilon_h in \Omega_h
+\end{equation*}
 
 \begin{equation*}
+l_h = 0 in \Gamma_h
 \end{equation*}
 
+If $||\epsilon_h||_{L^\infty(\Omega_h)} = O(h^p)$ (consistency) and $||l_h||_{L^\infty(\overline{\Omega_h})} \le C || \epsilon_h ||_{L^\infty(\Omega_h)}$ then $||L_h||_{L^\infty(\overline{\Omega_h})} = O(h^p)$ (convergence).
 
-\begin{equation*}
-\end{equation*}
-
-
-\begin{equation*}
-\end{equation*}
-
-
-\begin{equation*}
-\end{equation*}
-
-
-\begin{equation*}
-\end{equation*}
-
-
-\begin{equation*}
-\end{equation*}
-
-
-\begin{equation*}
-\end{equation*}
-
-
-\begin{equation*}
-\end{equation*}
-
-
-\begin{equation*}
-\end{equation*}
-
-
-\begin{equation*}
-\end{equation*}
-
-
-\begin{equation*}
-\end{equation*}
-
-
-\begin{equation*}
-\end{equation*}
