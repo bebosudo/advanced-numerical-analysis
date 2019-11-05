@@ -1,0 +1,305 @@
+\chapter{Parabolic PDEs}
+
+Heat equation:
+
+\begin{equation*}
+\frac{\partial u}{\partial t} (x, t) = c \Delta u(x,t) + f(x, t), \quad (x, t) \in \Omega \times [0, T]
+\end{equation*}
+
+where $\Omega$ is an open subject of $\mathbb{R}^d \; (d = 1, 2, \text{ or } 3)$ (interprets a body), $[0, T]$, in a time interval.
+$u$ represents temperature; $c$ depends on conductivity, specific heat and density of the body $\Omega$; $f$ represents sources or sinks of heat.
+
+We have to add:
+\begin{itemize}
+	\item boundary conditions: $u(x, t)=0, \quad (x,t) \in \Gamma \times [0, T]$ where $T$ is the border of $\Omega$;
+	\item initial condition: $u(x, 0) = u_0(x), \quad x \in \Omega$
+\end{itemize}
+
+The problem: given $c, f, u_0$, find $u$!
+
+\section{Numerical solution of the heat equation}
+
+Consider $\Omega = (0, 1)^2$, $h=\frac{1}{N}$, with $N$ positive integer.
+Then we have $\Omega_h, \Gamma_h, \Delta_h$.
+
+The discrete problem is:
+
+\begin{equation*}
+\frac{\partial}{\partial t} u_h((x, y), t) = \Delta_h u_h(x, y) + f(x, y),
+\quad (x, y) \in \Omega_h
+\end{equation*}
+
+\begin{equation*}
+u_h((x, y), t) = 0, \quad (x, y) \in \Gamma_h
+\end{equation*}
+
+\begin{equation*}
+u_h((x,y), 0) = u_0(x, y), \quad (x, y) \in \Omega_h
+\end{equation*}
+
+This is a linear system of $(N-1)^2$ scalar linear differential equations in the $(N-1)^2$ unknown functions:
+
+\begin{equation*}
+u_h ((x, y), \cdot): [0, T] \rightarrow \mathbb{R}, \quad (x, y) \in \Omega_h
+\end{equation*}
+
+This is only a \textit{semi-discretization} because the time is not discretized (it's called \textit{method of lines} since the lines are the unknown functions).
+For a full discretization we need a numerical method for the time-integration.
+
+The simplest method to solve ODEs of type
+\begin{equation*}
+y'(t) = f(t, y(t)), \quad t \in [0, T]
+\end{equation*}
+is the Explicit Euler (also called Forward Euler) method, which scheme is $y_{m+1} = y_m + k f(t_m, y_m), \quad m=0, \dots, M-1$.
+
+There's also the Implicit Euler (also called Backward Euler) method: $y_{m+1} = y_m + f(t_{m+1}, y_{m-})$.
+
+And also the Trapezoidal Rule: $y_{m+1} = y_m + \frac{1}{2} (f(t_m, y_m) + f(t_{m+1}, y_{m+1})$.
+
+We consider the \textit{1D} case:
+
+\begin{equation*}
+\frac{\partial}{\partial t} u(x, t) = \frac{\partial^2}{\partial x^2} u(x, t) + f(x, t), \quad (x, t) \in \overbrace{(0, 1)}^{= \Omega} \times [0, T]
+\end{equation*}
+
+\begin{equation*}
+u(0, t) = u(1, t) = 0
+\end{equation*}
+\begin{equation*}
+u(x, 0) = u_0(x), \quad x \in (0, 1)
+\end{equation*}
+
+with: $\Omega = (0, 1)$, $\Omega_h = \{nh: n \in \{1, \dots, N-1\} \}$ and $\Gamma_h = \{0, 1\}$.
+
+We discretize in space by the centered difference scheme for the second derivative in space and in time by the forward difference scheme for the first derivative in time. We use $h = \frac{1}{N}$ as space stepsize and $k = \frac{T}{M}$ as time stepsize.
+discrete point in space: $nh$ with $n \in \{1, \dots, N-1\}$ 
+discrete point in time: $mk$ with $k \in \{1, \dots, u\}$ 
+
+$U_n^m$ denotes two discrete approximation of $u(nh, mk)$.
+At the point $(nh, mk)$, $n \in \{1, \dots, N-1\}$ and $m \in \{0, 1, \dots, M-1\}$ we have the discrete equation:
+
+\begin{equation*}
+\underbrace{\frac{U_n^{m+1} - U_n^{m}}{k}}_{\approx \frac{\partial u}{\partial t}(x, t) \text{ with } x=nh,\,t=mk } = c \underbrace{\frac{U_{n-1}^{m} - 2U_n^{m} + U_{n+1}^{m}}{h^2}}_{\approx \frac{\partial u}{\partial x^2}(x, t)} + \underbrace{f_n^m}_{= f(nk, mk)}
+\end{equation*}
+
+\begin{equation*}
+U_n^{m+1} = \frac{c k}{h^2} U_{n-1}^m + (1 - \frac{2 c k}{h^2}) U_n^m + \frac{c k}{h^2} U_{n+1}^m + k f_n^m =
+\end{equation*}
+
+\begin{equation*}
+= U_n^m + \frac{ck}{h^2}U_{n-1}^m - \frac{2 c k}{h^2} U_n^m + \frac{c k}{h^2}U_{n+1}^m
+\end{equation*}
+
+Consider:
+\begin{equation*}
+U^m = (U_1^m, \dots, U_{N-1}^m), f^m = (f_1^m, \dots, f_{N-1}^m)
+\end{equation*}
+
+\begin{equation*}
+U^{m+1} = U^m + k(\Delta_h U^m + f^m)
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}
+
+\begin{equation*}
+\end{equation*}

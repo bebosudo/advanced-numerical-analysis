@@ -565,6 +565,67 @@ and then:
 \qquad\qquad\qquad\qquad\qquad\qquad ||e_h||_h = O(h^2), \, h \rightarrow 0   \qquad\qquad\qquad\qquad\qquad\qquad \blacksquare
 \end{equation*}
 
-%\begin{equation*}
-%\end{equation*}
+\section{Some notes needs to be copied from paper here}
+
+...
+
+We proved: for $v: \overline{\Omega} \rightarrow \mathbb{R}$ of class $C^3$:
+
+..
+
+The order of consistency error is only $O(h)$, not $O(h^2)$ as in the case of the square.
+We have the discrete problem:
+
+\begin{equation*}
+\Delta_h u_h (x, y) = f(x, y), \quad (x, y) \in \Omega_h
+\end{equation*}
+\begin{equation*}
+u_h(x, y) = g(x, y), \quad (x,y) \in \Gamma_h
+\end{equation*}
+
+This is a linear system of M unknowns $u_h(x, y), \quad (x,y) \in \Omega_h$, where $M$ is the number of points in $\Omega_h$, into $M$ equations; we have an equation for any point in $\Omega_h$.
+
+With respect to the case of the square, the matrix of the system is in general non-symmetric, because:
+
+\begin{equation*}
+\Delta_h u_h(x, y) = \frac{2}{h_1 (h_1 + h_2)} u_h(x - h_1, y) - \frac{2}{h_1 h_2} (x, y) + \frac{2}{h_2 (h_1 + h_2)} (x + h_2, y) + \frac{2}{h_3 (h_3 + h_4)} u_h(x, y - h_3) - \frac{2}{h_3 h_4} (x, y) + \frac{2}{h_3 (h_3 + h_4)} (x, y + h_4) = f(x, y), \quad (x,y) \in \Omega_h
+\end{equation*}
+
+Symmetric matrix: $a_{ij} = a_{ji}$
+the coefficient of the \textit{j}-th matrix, in the \textit{i}-th equation is equal to the coefficient of the \textit{i}-th matrix in the \textit{j}-th equation.
+The coefficient in the \textit{j}-th equation of the \textit{i}-th unknown is 
+
+\begin{equation*}
+\frac{2}{h_2 (h_2 + \hat{h_2})} u_h(x, y) - \frac{2}{h_2 \hat{h_2}} u_h(x + h_2, y)+ \frac{2}{\hat{h_2}(h_2 + \hat{h_2})} u_h(x + \hat{h_2}, y)
+\end{equation*}
+
+Characteristics of the matrix that are maintained in the general case:
+\begin{itemize}
+	\item sparsity (the matrix is sparse): in any row there are at most 5 non-zero elements;
+	\item diagonal elements are negative and off-diagonal elements are positive
+	\item diagonal dominance
+\end{itemize}
+
+An MxM matrix A is called diagonal dominant if:
+
+\begin{equation*}
+\forall i \in \{1, \dots, M\}: |a_{ii}| \ge \sum_{j=1, j \neq i}^{M} |a_{ij}|
+\end{equation*}
+
+Maximum sum of the off-diagonal elements is:
+
+\begin{equation*}
+\frac{2}{h_1 (h_1 + h_2)} + \frac{2}{h_2 (h_1 + h_2)} + \frac{2}{h_3 (h_3 + h_4)} + \frac{2}{h_4 (h_3 + h_4)} = \frac{2}{h_1 + h_2} (\frac{1}{h_1} + \frac{1}{h_2}) + \frac{2}{h_3 + h_4 (\frac{1}{h_3} + \frac{1}{h_4})}
+\end{equation*}
+
+\begin{equation*}
+\frac{2}{h_1 + h_2} \frac{h_1 + h_2}{h_1 h_2} + \frac{2}{h_3 + h_4} \frac{h_3 + h_4}{h_3 h_4} = \frac{2}{h_1 + h_2} + \frac{2}{h_3 + h_4}
+\end{equation*}
+
+We have, by stability plus consistency of order one, convergence of order one. But
+\begin{enumerate}
+	\item Points in $\mathring{\Omega}_h$ have consistency error $O(h^2)$;
+	\item number of points in $\Omega_h \mathring{\Omega}_h$ (where the consistency error is $O(h)$)  divided by number of points in $\mathring{\Omega}_h$ (where the consistency error is $O(h^2)$) $= O(h)$
+	\item Points of $\Omega_h \\ \mathring{\Omega}_h$ are at a distance $O(h)$ of the boundary $\Gamma_h$, where the solution is known exactly.
+\end{enumerate}
 
